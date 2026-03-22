@@ -1,0 +1,14 @@
+com/example/ebook/model/SourceBookRegistry.class
+com/example/ebook/model/SourceBook$Range.class
+com/example/ebook/service/XmlService.class
+com/example/ebook/model/SourceBook$SourceChunk.class
+com/example/ebook/controller/ChunkController.class
+com/example/ebook/EbookAssemblyApplication.class
+com/example/ebook/service/XmlService$ChunkWithBookInfo.class
+com/example/ebook/model/Book.class
+com/example/ebook/model/SourceBook$FileInfo.class
+com/example/ebook/model/Book$ChunkRef.class
+com/example/ebook/model/SourceBook.class
+com/example/ebook/controller/BookController.class
+com/example/ebook/config/WebConfig.class
+com/example/ebook/model/CustomBookRegistry.class

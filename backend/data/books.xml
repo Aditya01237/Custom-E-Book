@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SourceBookRegistry>
+    <book id="book1">
+        <title>Database Systems</title>
+        <author>Navathe</author>
+        <file>
+            <path>/files/database_book.pdf</path>
+        </file>
+        <chunks>
+            <chunk id="c1">
+                <title>Introduction</title>
+                <chunkType>virtual</chunkType>
+                <isVirtual>false</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>10</endPage>
+                </range>
+                <price>5.99</price>
+            </chunk>
+            <chunk id="c2">
+                <title>Relational Model</title>
+                <chunkType>virtual</chunkType>
+                <isVirtual>false</isVirtual>
+                <range>
+                    <startPage>11</startPage>
+                    <endPage>20</endPage>
+                </range>
+                <price>7.99</price>
+            </chunk>
+            <chunk id="c3">
+                <title>Transactions</title>
+                <chunkType>virtual</chunkType>
+                <isVirtual>false</isVirtual>
+                <range>
+                    <startPage>21</startPage>
+                    <endPage>30</endPage>
+                </range>
+                <price>6.99</price>
+            </chunk>
+            <chunk id="03c59292-2bbc-448f-a805-b12d73ff2207">
+                <title>XML</title>
+                <chunkType>video</chunkType>
+                <isVirtual>false</isVirtual>
+                <price>89.0</price>
+                <uri>uploads/c2f83a03-0d91-4b4a-b7e3-85b1fdc06fe5_XMLVIdeo.mp4</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="786b5eb8-6d59-4860-a0f6-d77c61034ace">
+        <title>Databases</title>
+        <author>Abhinav</author>
+        <chunks>
+            <chunk id="45fb608e-3c54-4f31-a3f2-deb371906aed">
+                <title>Intro</title>
+                <chunkType>virtual</chunkType>
+                <isVirtual>false</isVirtual>
+                <range>
+                    <startPage>0</startPage>
+                    <endPage>1</endPage>
+                </range>
+                <price>45.0</price>
+                <uri>uploads/c19f6dc9-e721-44d4-8dc1-3a06a433dd1c_AUD-20260216-WA0010 (1).pdf</uri>
+            </chunk>
+            <chunk id="05baedd8-7dc1-40f8-8897-5ff15791526a">
+                <title>Video</title>
+                <chunkType>video</chunkType>
+                <isVirtual>false</isVirtual>
+                <price>45.0</price>
+                <uri>uploads/82b4e9f2-b79d-4bc3-a645-f58fc9a2e00e_TV Library.tvlibrary.zip</uri>
+            </chunk>
+            <chunk id="a5bfa3c9-035e-4a02-9af0-6f417e402598">
+                <title>video1</title>
+                <chunkType>video</chunkType>
+                <isVirtual>false</isVirtual>
+                <price>34.0</price>
+                <uri>uploads/e0069e67-5db1-43f7-9e89-69233c88dc67_WhatsApp Video 2026-03-16 at 15.01.03.mp4</uri>
+            </chunk>
+            <chunk id="1dc6ed63-ff10-4022-b275-ea104b639c4a">
+                <title>Mypage</title>
+                <chunkType>virtual</chunkType>
+                <isVirtual>false</isVirtual>
+                <range>
+                    <startPage>3</startPage>
+                    <endPage>4</endPage>
+                </range>
+                <price>23.0</price>
+                <uri>uploads/48f13ff8-ee5c-4bd0-a579-832766e7810b_NLP-Assignemtn-2_MT2025015.pdf</uri>
+            </chunk>
+            <chunk id="7a7bd018-d01b-4bfb-8a37-9de267c0e0d7">
+                <title>MY XML VIdeo</title>
+                <chunkType>video</chunkType>
+                <isVirtual>false</isVirtual>
+                <price>90.0</price>
+                <uri>uploads/9002eb28-61e7-408d-804d-1add913f201c_XMLVIdeo.mp4</uri>
+            </chunk>
+            <chunk id="81d23ab5-6421-40f7-b230-2535b120bd26">
+                <title>XML New Video</title>
+                <chunkType>video</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>0</startPage>
+                    <endPage>0</endPage>
+                    <startTime>01:00</startTime>
+                    <endTime>02:00</endTime>
+                </range>
+                <price>89.0</price>
+                <uri>uploads/trimmed_ca8e171f-e81a-4478-bc7c-43a3cd1108ef_XMLVIdeo.mp4</uri>
+            </chunk>
+            <chunk id="09ebe9d9-054d-4c6e-b4bc-efb98e5f166a">
+                <title>XML</title>
+                <chunkType>video</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>0</startPage>
+                    <endPage>0</endPage>
+                    <startTime>1</startTime>
+                    <endTime>2</endTime>
+                </range>
+                <price>65.0</price>
+                <uri>uploads/trimmed_90b05186-b9fa-4e91-aa9d-8876e6530287_XMLVIdeo.mp4</uri>
+            </chunk>
+            <chunk id="b6da9612-a710-4aa5-a739-74a1611ea7ba">
+                <title>xml_video</title>
+                <chunkType>video</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>0</startPage>
+                    <endPage>0</endPage>
+                    <startTime>01:00</startTime>
+                    <endTime>02:00</endTime>
+                </range>
+                <price>35.0</price>
+                <uri>uploads/trimmed_eb737c81-acad-4ee5-878b-60725835b4ba_XMLVIdeo.mp4</uri>
+            </chunk>
+            <chunk id="0bbad591-c8d3-4365-a9fe-f62af709ecae">
+                <title>Transictions</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>1</endPage>
+                </range>
+                <price>65.0</price>
+                <uri>uploads/trimmed_aa6aa65b-d97c-4fe5-b81e-fc38a890b9b1_NLP-Assignemtn-2_MT2025015.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="f66af4ef-edd4-4c3b-9d5a-3cf85dca06ac">
+        <title>Test Book</title>
+        <author>Test Author</author>
+        <chunks>
+            <chunk id="5b8c30a5-cda5-4bcb-b04e-972ab4bbf039">
+                <title>XML</title>
+                <chunkType>video</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>0</startPage>
+                    <endPage>0</endPage>
+                    <startTime>01:00</startTime>
+                    <endTime>02:00</endTime>
+                </range>
+                <price>43.0</price>
+                <uri>uploads/trimmed_bcaf8e86-203f-4867-a3ff-da2401446fb3_XMLVIdeo.mp4</uri>
+            </chunk>
+            <chunk id="a176045f-3f79-482a-87a3-094eb3bb26e8">
+                <title>XML</title>
+                <chunkType>text</chunkType>
+                <isVirtual>false</isVirtual>
+                <price>34.0</price>
+                <uri>uploads/6d50647b-4f7e-499f-8c56-355b34a3c581_XMLVIdeo.mp4</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="749d3f2e-6b3d-4e5a-a429-20279edddb53">
+        <title>Databases</title>
+        <author>Dr. Chandrashekar Ramanathan</author>
+        <chunks/>
+    </book>
+    <book id="0873fc53-0c1a-4dc8-a7fb-158b698c0c3c">
+        <title>Data Modeling</title>
+        <author>Prof. Chandrashekar Ramanathan</author>
+        <chunks>
+            <chunk id="a6f00abc-5ba8-4297-abba-7a42c0bbdd03">
+                <title>XML</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>2</endPage>
+                </range>
+                <price>45.0</price>
+                <uri>uploads/trimmed_0ecbc562-2e12-4179-8326-90e9b6c7c153_NLP-Assignemtn-2_MT2025015.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="f8dc2764-87ba-430d-8077-7374ed1683b5">
+        <title>XML</title>
+        <author>Aditya</author>
+        <chunks>
+            <chunk id="3697a84a-f114-4e83-a865-98bfdc128f3d">
+                <title>NLP</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>2</startPage>
+                    <endPage>10</endPage>
+                </range>
+                <price>67.0</price>
+                <uri>uploads/trimmed_b2cb6606-9011-40e0-96c5-1df7402a3971_NLP-Assignemtn-2_MT2025015.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+</SourceBookRegistry>

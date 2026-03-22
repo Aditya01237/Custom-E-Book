@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CustomBookRegistry>
+    <ebook id="ebook1">
+        <title>My Database Study Guide</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>12.98</totalCost>
+        <chunks>
+            <chunkRef bookId="book1" chunkId="c1" seq="1">
+                <note>Start with the basics</note>
+            </chunkRef>
+            <chunkRef bookId="book1" chunkId="c3" seq="2">
+                <note>Important for exam</note>
+            </chunkRef>
+        </chunks>
+    </ebook>
+</CustomBookRegistry>
