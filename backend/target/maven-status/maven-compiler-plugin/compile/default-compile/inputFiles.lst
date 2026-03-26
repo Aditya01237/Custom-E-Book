@@ -1,9 +1,9 @@
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/config/WebConfig.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/service/XmlService.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/model/SourceBook.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/controller/ChunkController.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/EbookAssemblyApplication.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/controller/BookController.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/model/CustomBookRegistry.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/model/SourceBookRegistry.java
-/Users/adityapareek/Desktop/IIITB/DM PROJECT/backend/src/main/java/com/example/ebook/model/Book.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/CustomBookRegistry.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/controller/ChunkController.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/controller/BookController.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/EbookAssemblyApplication.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/config/WebConfig.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/SourceBook.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/SourceBookRegistry.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/Book.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/XmlService.java

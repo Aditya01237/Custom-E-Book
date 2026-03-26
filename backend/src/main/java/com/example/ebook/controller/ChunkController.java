@@ -124,16 +124,20 @@ public class ChunkController {
 
             if (isVirtual) {
                 SourceBook.Range range = new SourceBook.Range();
-                if ("text".equalsIgnoreCase(chunkType)) {
+                if ("text".equalsIgnoreCase(chunkType)) { // if Chunk type is Text (text or PDF file) then use page
+                                                          // numbers for range
                     range.setStartPage(startPage);
                     range.setEndPage(endPage);
-                    try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader.loadPDF(targetLocation.toFile())) {
+                    try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader
+                            .loadPDF(targetLocation.toFile())) {
                         int totalPages = document.getNumberOfPages();
                         for (int i = totalPages - 1; i >= endPage; i--) {
-                            if (i >= 0 && i < document.getNumberOfPages()) document.removePage(i);
+                            if (i >= 0 && i < document.getNumberOfPages())
+                                document.removePage(i);
                         }
                         for (int i = 0; i < startPage - 1; i++) {
-                            if (document.getNumberOfPages() > 0) document.removePage(0);
+                            if (document.getNumberOfPages() > 0)
+                                document.removePage(0);
                         }
                         String newFilename = "trimmed_" + filename;
                         Path newTargetLocation = this.uploadPath.resolve(newFilename);
@@ -143,16 +147,16 @@ public class ChunkController {
                         e.printStackTrace();
                     }
                 } else if ("audio".equalsIgnoreCase(chunkType) || "video".equalsIgnoreCase(chunkType)) {
+                    // if Chunk type is audio/video then use timestamps for range
                     range.setStartTime(startTime);
                     range.setEndTime(endTime);
                     String newFilename = "trimmed_" + filename;
                     Path newTargetLocation = this.uploadPath.resolve(newFilename);
                     try {
                         ProcessBuilder pb = new ProcessBuilder(
-                            "ffmpeg", "-y", "-ss", startTime, "-to", endTime,
-                            "-i", targetLocation.toString(),
-                            newTargetLocation.toString()
-                        );
+                                "ffmpeg", "-y", "-ss", startTime, "-to", endTime,
+                                "-i", targetLocation.toString(),
+                                newTargetLocation.toString());
                         pb.inheritIO();
                         Process process = pb.start();
                         int exitCode = process.waitFor();
@@ -177,6 +181,33 @@ public class ChunkController {
 
             return ResponseEntity.ok(chunk);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/chunks/{bookId}/{chunkId}")
+    public ResponseEntity<Void> deleteChunk(@PathVariable String bookId, @PathVariable String chunkId) {
+        try {
+            SourceBookRegistry registry = xmlService.getSourceBookRegistry();
+            SourceBook sourceBook = registry.getBooks().stream()
+                    .filter(b -> b.getId().equals(bookId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (sourceBook == null || sourceBook.getChunks() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            boolean removed = sourceBook.getChunks().removeIf(chunk -> chunk.getId().equals(chunkId));
+
+            if (removed) {
+                xmlService.saveSourceBookRegistry(registry);
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();

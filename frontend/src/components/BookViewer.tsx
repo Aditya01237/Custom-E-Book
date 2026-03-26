@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, BookOpen, FileText, Video, Mic, Image as ImageIcon } from 'lucide-react';
+import { Download, BookOpen } from 'lucide-react';
 
 interface Ebook {
     id: string;
@@ -35,7 +35,7 @@ const BookViewer: React.FC = () => {
     const [ebooks, setEbooks] = useState<Ebook[]>([]);
     const [selectedEbook, setSelectedEbook] = useState<Ebook | null>(null);
     const [sourceBooks, setSourceBooks] = useState<SourceBook[]>([]);
-    const [loading, setLoading] = useState(false);
+
 
     // Fetch all ebooks and source books
     useEffect(() => {

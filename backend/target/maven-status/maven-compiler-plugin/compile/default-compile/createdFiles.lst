@@ -10,5 +10,5 @@ com/example/ebook/model/SourceBook$FileInfo.class
 com/example/ebook/model/Book$ChunkRef.class
 com/example/ebook/model/SourceBook.class
 com/example/ebook/controller/BookController.class
-com/example/ebook/config/WebConfig.class
 com/example/ebook/model/CustomBookRegistry.class
+com/example/ebook/config/WebConfig.class

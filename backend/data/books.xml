@@ -210,4 +210,21 @@
             </chunk>
         </chunks>
     </book>
+    <book id="d2206f73-98f6-4647-9612-52d94624b1d3">
+        <title>Browser Test Book</title>
+        <author>AI Tester</author>
+        <chunks>
+            <chunk id="79f6a6a7-4b0c-4301-8550-fc82d706c5a6">
+                <title>Intro Chunk</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>2</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_eb839201-6eb3-4a3f-be20-a0da764469b3_Activity 3 &amp; 4.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
 </SourceBookRegistry>

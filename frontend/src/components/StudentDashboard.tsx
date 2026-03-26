@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Save, FileText, Video, Mic, Image as ImageIcon, X, Eye, Download, User, DollarSign, Clock, BookOpen } from 'lucide-react';
+import { Plus, Trash2, Save, FileText, Video, Mic, Image as ImageIcon, X, Eye, Download, DollarSign, BookOpen } from 'lucide-react';
 
 interface ChunkWithBookInfo {
     chunk: {
