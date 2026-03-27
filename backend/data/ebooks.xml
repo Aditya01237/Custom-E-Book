@@ -56,4 +56,82 @@
             </chunkRef>
         </chunks>
     </ebook>
+    <ebook id="2efb8823-530e-4c59-86a3-e277ecac2fb1">
+        <title>Custom book 202</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>22.990000000000002</totalCost>
+        <chunks>
+            <chunkRef bookId="96a4106e-11ac-4a48-b709-84fa67317116" chunkId="0e6fb740-9b85-4264-91d9-766704d4b618" seq="1">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="3aa3ab65-30ab-4d59-a476-f70f5952699e" chunkId="b5f242fc-674c-4223-9935-7099f05bc845" seq="2">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
+    <ebook id="4a96263f-7d57-4c8d-9ace-00bb26a852d4">
+        <title>new ebook 1023</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>2.45</totalCost>
+        <chunks>
+            <chunkRef bookId="4e343ff8-a421-4904-9420-d4747d56f035" chunkId="5517a689-56d2-45a3-88c6-145a1a9e5834" seq="1">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
+    <ebook id="43841b13-fddf-4c8e-aceb-20ba008526b8">
+        <title>SAMPLE VBOOK</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>128.0</totalCost>
+        <chunks>
+            <chunkRef bookId="b8a71950-a6fe-452d-a1b4-a78a8d286307" chunkId="70e0d257-18d8-4dbd-b7cb-33cfef936109" seq="1">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="96e5c1ff-1f60-4e74-b67b-a94e05c86c2c" chunkId="145b890d-d678-4768-982b-c6cc405a57e7" seq="2">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
+    <ebook id="56d57db8-de4a-4f39-9081-b9cad06f0956">
+        <title>Sample Ebook 500</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>3.8</totalCost>
+        <chunks>
+            <chunkRef bookId="8b67c046-a51f-4948-b29e-4ac4eee68c10" chunkId="b07a5734-eabe-4519-96b7-e209d4dfe475" seq="1">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="8b67c046-a51f-4948-b29e-4ac4eee68c10" chunkId="6264216a-5d67-4b30-80f1-777653c5298b" seq="2">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
+    <ebook id="4b312596-fd49-46d4-8e11-b88edaa9138d">
+        <title>TempBook</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>12.5</totalCost>
+        <chunks>
+            <chunkRef bookId="bac0715e-08b7-4aea-9ee9-410535282d42" chunkId="cebcbed5-ef7a-4f23-83f2-b1e560fbf1f1" seq="1">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="bac0715e-08b7-4aea-9ee9-410535282d42" chunkId="9f25745c-c0f6-4f8b-9f2d-e3279e2d6c90" seq="2">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
+    <ebook id="4ac366d8-f4ee-44a9-ad43-e15f0fb522c1">
+        <title>Customebook 1000</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>49.3</totalCost>
+        <chunks>
+            <chunkRef bookId="ee981c86-9408-4893-8921-b97a231933f2" chunkId="be761ace-4a41-46a8-bd04-6bc29ec10178" seq="1">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="ee981c86-9408-4893-8921-b97a231933f2" chunkId="bd534d7f-3c22-47f8-849e-4e5811189ddc" seq="2">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="8b67c046-a51f-4948-b29e-4ac4eee68c10" chunkId="6264216a-5d67-4b30-80f1-777653c5298b" seq="3">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
 </CustomBookRegistry>

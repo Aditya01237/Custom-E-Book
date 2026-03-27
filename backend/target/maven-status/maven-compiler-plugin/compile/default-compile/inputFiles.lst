@@ -7,3 +7,4 @@
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/SourceBookRegistry.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/Book.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/XmlService.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/EpubExportService.java

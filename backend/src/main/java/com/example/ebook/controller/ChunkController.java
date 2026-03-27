@@ -85,7 +85,7 @@ public class ChunkController {
 
     @PostMapping("/chunks/upload")
     public ResponseEntity<SourceBook.SourceChunk> uploadChunk(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam("bookId") String bookId,
             @RequestParam("title") String title,
             @RequestParam("price") double price,
@@ -108,10 +108,32 @@ public class ChunkController {
                 return ResponseEntity.badRequest().build();
             }
 
-            // Save file
-            String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path targetLocation = this.uploadPath.resolve(filename);
-            Files.copy(file.getInputStream(), targetLocation);
+            // Save file or resolve existing
+            Path targetLocation;
+            String filename;
+            
+            if (file != null && !file.isEmpty()) {
+                filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                targetLocation = this.uploadPath.resolve(filename);
+                Files.copy(file.getInputStream(), targetLocation);
+                
+                // If the book doesn't have a primary file yet, set this as the primary file
+                if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                    sourceBook.setFile(new SourceBook.FileInfo("uploads/" + filename));
+                }
+            } else {
+                if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                    return ResponseEntity.badRequest().build(); // No file to process
+                }
+                String existingPath = sourceBook.getFile().getPath();
+                if (existingPath.startsWith("uploads/")) {
+                    filename = existingPath.substring("uploads/".length());
+                } else {
+                    filename = Paths.get(existingPath).getFileName().toString();
+                }
+                // Determine absolute path of the existing file (assuming it sits in project root or uploads folder)
+                targetLocation = Paths.get(existingPath).toAbsolutePath().normalize();
+            }
 
             // Create chunk
             SourceBook.SourceChunk chunk = new SourceBook.SourceChunk();
@@ -124,27 +146,35 @@ public class ChunkController {
 
             if (isVirtual) {
                 SourceBook.Range range = new SourceBook.Range();
-                if ("text".equalsIgnoreCase(chunkType)) { // if Chunk type is Text (text or PDF file) then use page
-                                                          // numbers for range
+                if ("text".equalsIgnoreCase(chunkType) || "pdf".equalsIgnoreCase(chunkType)) {
                     range.setStartPage(startPage);
                     range.setEndPage(endPage);
                     try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader
                             .loadPDF(targetLocation.toFile())) {
                         int totalPages = document.getNumberOfPages();
-                        for (int i = totalPages - 1; i >= endPage; i--) {
-                            if (i >= 0 && i < document.getNumberOfPages())
-                                document.removePage(i);
+                        
+                        // Prevent out of bounds
+                        int safeEndPage = Math.min(endPage, totalPages);
+                        int safeStartPage = Math.max(startPage, 1);
+                        
+                        if (safeStartPage <= safeEndPage && safeEndPage > 0) {
+                            for (int i = totalPages - 1; i >= safeEndPage; i--) {
+                                if (i >= 0 && i < document.getNumberOfPages())
+                                    document.removePage(i);
+                            }
+                            for (int i = 0; i < safeStartPage - 1; i++) {
+                                if (document.getNumberOfPages() > 0)
+                                    document.removePage(0);
+                            }
                         }
-                        for (int i = 0; i < startPage - 1; i++) {
-                            if (document.getNumberOfPages() > 0)
-                                document.removePage(0);
-                        }
+                        
                         String newFilename = "trimmed_" + filename;
                         Path newTargetLocation = this.uploadPath.resolve(newFilename);
                         document.save(newTargetLocation.toFile());
                         chunk.setUri("uploads/" + newFilename);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        return ResponseEntity.status(500).build();
                     }
                 } else if ("audio".equalsIgnoreCase(chunkType) || "video".equalsIgnoreCase(chunkType)) {
                     // if Chunk type is audio/video then use timestamps for range
@@ -154,8 +184,10 @@ public class ChunkController {
                     Path newTargetLocation = this.uploadPath.resolve(newFilename);
                     try {
                         ProcessBuilder pb = new ProcessBuilder(
-                                "ffmpeg", "-y", "-ss", startTime, "-to", endTime,
+                                "ffmpeg", "-y", 
                                 "-i", targetLocation.toString(),
+                                "-ss", startTime, 
+                                "-to", endTime,
                                 newTargetLocation.toString());
                         pb.inheritIO();
                         Process process = pb.start();
@@ -164,9 +196,11 @@ public class ChunkController {
                             chunk.setUri("uploads/" + newFilename);
                         } else {
                             System.err.println("FFmpeg failed with exit code " + exitCode);
+                            return ResponseEntity.status(500).build();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        return ResponseEntity.status(500).build();
                     }
                 }
                 chunk.setRange(range);

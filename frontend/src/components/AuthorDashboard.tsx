@@ -23,6 +23,7 @@ interface SourceBook {
     title: string;
     author: string;
     chunks?: SourceChunk[];
+    file?: { path: string };
 }
 
 type WizardStep = 'select-flow' | 'create-book' | 'select-book' | 'chunking';
@@ -103,11 +104,14 @@ const AuthorDashboard: React.FC = () => {
 
     const handleUploadChunk = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedBook || !file) return;
+        if (!selectedBook) return;
+        if (!file && !selectedBook.file?.path) return;
 
         setIsUploading(true);
         const formData = new FormData();
-        formData.append('file', file);
+        if (file) {
+            formData.append('file', file);
+        }
         formData.append('bookId', selectedBook.id);
         formData.append('title', chunkTitle);
         formData.append('price', price || '0');
@@ -115,7 +119,7 @@ const AuthorDashboard: React.FC = () => {
         formData.append('isVirtual', isVirtual.toString());
 
         if (isVirtual) {
-            if (chunkType === 'text') {
+            if (chunkType === 'text' || chunkType === 'pdf') {
                 formData.append('startPage', startPage);
                 formData.append('endPage', endPage);
             } else {
@@ -313,7 +317,13 @@ const AuthorDashboard: React.FC = () => {
                                         {chunkType === 'audio' && <Mic size={48} className={file ? "text-green-600" : "text-gray-400"} />}
                                         {chunkType === 'video' && <Video size={48} className={file ? "text-green-600" : "text-gray-400"} />}
                                         <div className="font-semibold text-lg">
-                                            {file ? <span className="text-green-700">{file.name} (Uploaded)</span> : <span className="text-gray-600">Click or drag file here to upload</span>}
+                                            {file ? (
+                                                <span className="text-green-700">{file.name} (Uploaded)</span>
+                                            ) : selectedBook?.file?.path ? (
+                                                <span className="text-green-700">Pre-loaded Book File Ready</span>
+                                            ) : (
+                                                <span className="text-gray-600">Click or drag file here to upload</span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +395,7 @@ const AuthorDashboard: React.FC = () => {
                                     </div>
 
                                     <button 
-                                        disabled={!file || isUploading}
+                                        disabled={(!file && !selectedBook?.file?.path) || isUploading}
                                         className="bg-blue-600 disabled:bg-blue-400 text-white font-bold py-4 px-8 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-lg transition-all flex items-center gap-2"
                                     >
                                         {isUploading ? 'Creating...' : <>Create Chunk <Plus size={20} /></>}

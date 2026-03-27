@@ -4,8 +4,13 @@ import com.example.ebook.model.Book;
 import com.example.ebook.model.CustomBookRegistry;
 import com.example.ebook.model.SourceBook;
 import com.example.ebook.service.XmlService;
+import com.example.ebook.service.EpubExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,10 +22,12 @@ import java.util.UUID;
 public class BookController {
 
     private final XmlService xmlService;
+    private final EpubExportService epubExportService;
 
     @Autowired
-    public BookController(XmlService xmlService) {
+    public BookController(XmlService xmlService, EpubExportService epubExportService) {
         this.xmlService = xmlService;
+        this.epubExportService = epubExportService;
     }
 
     @PostMapping("/create")
@@ -64,5 +71,22 @@ public class BookController {
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
         return ResponseEntity.ok(xmlService.getCustomBookRegistry().getEbooks());
+    }
+
+    @GetMapping("/{id}/export/epub")
+    public ResponseEntity<Resource> exportBookAsEpub(@PathVariable String id) {
+        try {
+            byte[] epubData = epubExportService.exportAsEpub(id);
+            ByteArrayResource resource = new ByteArrayResource(epubData);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"book-" + id + ".epub\"")
+                    .contentType(MediaType.parseMediaType("application/epub+zip"))
+                    .contentLength(epubData.length)
+                    .body(resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

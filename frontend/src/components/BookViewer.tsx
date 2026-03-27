@@ -29,6 +29,7 @@ interface SourceBook {
             endPage: number;
         };
     }>;
+    file?: { path: string };
 }
 
 const BookViewer: React.FC = () => {
@@ -53,7 +54,11 @@ const BookViewer: React.FC = () => {
     const findChunk = (bookId: string, chunkId: string) => {
         const book = sourceBooks.find(b => b.id === bookId);
         if (!book || !book.chunks) return null;
-        return { chunk: book.chunks.find(c => c.id === chunkId), bookTitle: book.title };
+        return { 
+            chunk: book.chunks.find(c => c.id === chunkId), 
+            bookTitle: book.title, 
+            bookFile: book.file 
+        };
     };
 
     const renderChunk = (ref: Ebook['chunkRefs'][0]) => {
@@ -66,8 +71,9 @@ const BookViewer: React.FC = () => {
             );
         }
 
-        const { chunk, bookTitle } = found;
-        const mediaUrl = chunk.uri ? `/${chunk.uri}` : null;
+        const { chunk, bookTitle, bookFile } = found;
+        const rawUrl = chunk.uri || bookFile?.path;
+        const mediaUrl = rawUrl ? (rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`) : null;
 
         return (
             <div key={ref.seq} className="mb-8 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
@@ -95,7 +101,7 @@ const BookViewer: React.FC = () => {
                             Your browser does not support audio.
                         </audio>
                     )}
-                    {chunk.chunkType === 'text' && mediaUrl && (
+                    {(chunk.chunkType === 'text' || chunk.chunkType === 'pdf') && mediaUrl && (
                         <div className="flex flex-col gap-2">
                             <object data={mediaUrl} type="application/pdf" className="w-full h-[600px] border rounded">
                                 <p>Your browser does not support PDFs. <a href={mediaUrl} download className="text-blue-600 underline">Download the PDF</a>.</p>
@@ -172,11 +178,19 @@ const BookViewer: React.FC = () => {
             {/* Render Selected Ebook */}
             {selectedEbook && (
                 <div className="animate-fade-in">
-                    <div className="text-center mb-10">
+                    <div className="text-center mb-10 pb-6 border-b border-gray-100">
                         <h1 className="text-4xl font-extrabold text-gray-900 mb-2">{selectedEbook.title}</h1>
-                        <p className="text-gray-500">
-                            Created By: {selectedEbook.createdBy} • Total Cost: ${selectedEbook.totalCost.toFixed(2)}
+                        <p className="text-gray-500 mb-6">
+                            Created By: <span className="font-semibold text-gray-700">{selectedEbook.createdBy}</span> • Total Cost: <span className="font-semibold text-green-600">${selectedEbook.totalCost.toFixed(2)}</span>
                         </p>
+                        <a 
+                            href={`/api/ebooks/${selectedEbook.id}/export/epub`}
+                            download
+                            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 transition-all"
+                        >
+                            <Download size={20} />
+                            Download EPUB
+                        </a>
                     </div>
 
                     <div className="space-y-6">
