@@ -93,25 +93,41 @@ public class EpubExportService {
 
             String bodyContent = "";
 
-            if ("text".equalsIgnoreCase(chunk.getChunkType()) && !chunk.isVirtual()) {
-                Optional<SourceBook> sbOpt = xmlService.findSourceBook(ref.getBookId());
-                if (sbOpt.isPresent() && sbOpt.get().getFile() != null) {
-                    bodyContent = extractTextFromPdf(sbOpt.get().getFile().getPath(), chunk.getRange());
+            String type = chunk.getChunkType();
+            if ("text".equalsIgnoreCase(type) || "pdf".equalsIgnoreCase(type) || "virtual".equalsIgnoreCase(type)) {
+                String pdfPathToRead = null;
+                SourceBook.Range rangeToUse = null;
+
+                if (chunk.getUri() != null && !chunk.getUri().isBlank()) {
+                    pdfPathToRead = chunk.getUri();
+                    if (!pdfPathToRead.contains("trimmed_")) {
+                        rangeToUse = chunk.getRange();
+                    }
+                } else {
+                    Optional<SourceBook> sbOpt = xmlService.findSourceBook(ref.getBookId());
+                    if (sbOpt.isPresent() && sbOpt.get().getFile() != null) {
+                        pdfPathToRead = sbOpt.get().getFile().getPath();
+                        rangeToUse = chunk.getRange();
+                    }
+                }
+
+                if (pdfPathToRead != null) {
+                    bodyContent = extractTextFromPdf(pdfPathToRead, rangeToUse);
                 } else {
                     bodyContent = "<p>Text content missing</p>";
                 }
-            } else if ("video".equalsIgnoreCase(chunk.getChunkType()) || "audio".equalsIgnoreCase(chunk.getChunkType())) {
+            } else if ("video".equalsIgnoreCase(type) || "audio".equalsIgnoreCase(type)) {
                 String mediaHref = "OEBPS/media/" + Paths.get(chunk.getUri()).getFileName().toString();
-                String mediaType = "video".equalsIgnoreCase(chunk.getChunkType()) ? "video/mp4" : "audio/mpeg";
+                String mediaType = "video".equalsIgnoreCase(type) ? "video/mp4" : "audio/mpeg";
                 
                 // Copy media file into zip
-                File mediaFile = new File("uploads/" + Paths.get(chunk.getUri()).getFileName().toString());
+                File mediaFile = new File(chunk.getUri().startsWith("uploads/") ? chunk.getUri() : "uploads/" + Paths.get(chunk.getUri()).getFileName().toString());
                 if (mediaFile.exists()) {
                     zos.putNextEntry(new ZipEntry(mediaHref));
                     Files.copy(mediaFile.toPath(), zos);
                     zos.closeEntry();
                     
-                    if ("video".equalsIgnoreCase(chunk.getChunkType())) {
+                    if ("video".equalsIgnoreCase(type)) {
                         bodyContent = "<video controls=\"controls\" src=\"../media/" + mediaFile.getName() + "\"></video>";
                     } else {
                         bodyContent = "<audio controls=\"controls\" src=\"../media/" + mediaFile.getName() + "\"></audio>";
@@ -121,8 +137,8 @@ public class EpubExportService {
                 }
                 
                 result.add(new ChunkData(id + "_media", mediaHref, mediaType, false));
-            } else if (chunk.isVirtual()) {
-                bodyContent = "<p>This is a virtual chunk placeholder.</p>";
+            } else {
+                bodyContent = "<p>Unsupported chunk type placeholder.</p>";
             }
 
             String xhtml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
