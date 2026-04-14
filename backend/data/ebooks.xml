@@ -29,4 +29,17 @@
             </chunkRef>
         </chunks>
     </ebook>
+    <ebook id="794219f8-b9d7-4c6c-b400-d79f52ee58bc">
+        <title>My New Ebook</title>
+        <createdBy>Student User</createdBy>
+        <totalCost>13.49</totalCost>
+        <chunks>
+            <chunkRef bookId="e5c7ab49-3c25-4301-8385-2f22b610b348" chunkId="10b3f8cd-f4b9-4751-87de-f88b257bd684" seq="1">
+                <note></note>
+            </chunkRef>
+            <chunkRef bookId="e5c7ab49-3c25-4301-8385-2f22b610b348" chunkId="875084aa-3884-4083-ae3e-c4557df988d9" seq="2">
+                <note></note>
+            </chunkRef>
+        </chunks>
+    </ebook>
 </CustomBookRegistry>

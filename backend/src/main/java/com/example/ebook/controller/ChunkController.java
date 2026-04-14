@@ -3,11 +3,13 @@ package com.example.ebook.controller;
 import com.example.ebook.model.SourceBook;
 import com.example.ebook.model.SourceBookRegistry;
 import com.example.ebook.service.XmlService;
+import com.example.ebook.service.AutoChunkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,11 +25,13 @@ import java.util.UUID;
 public class ChunkController {
 
     private final XmlService xmlService;
+    private final AutoChunkService autoChunkService;
     private final Path uploadPath;
 
     @Autowired
-    public ChunkController(XmlService xmlService) {
+    public ChunkController(XmlService xmlService, AutoChunkService autoChunkService) {
         this.xmlService = xmlService;
+        this.autoChunkService = autoChunkService;
         this.uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.uploadPath);
@@ -242,6 +246,165 @@ public class ChunkController {
             } else {
                 return ResponseEntity.notFound().build();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/chunks/auto-chunk")
+    public ResponseEntity<List<SourceBook.SourceChunk>> autoChunk(
+            @RequestParam(value = "file", required = false) MultipartFile fileParam,
+            @RequestParam("bookId") String bookId) {
+        try {
+            SourceBookRegistry registry = xmlService.getSourceBookRegistry();
+            SourceBook sourceBook = registry.getBooks().stream()
+                    .filter(b -> b.getId().equals(bookId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (sourceBook == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Path targetLocation;
+            String filename;
+
+            if (fileParam != null && !fileParam.isEmpty()) {
+                filename = UUID.randomUUID().toString() + "_" + fileParam.getOriginalFilename();
+                targetLocation = this.uploadPath.resolve(filename);
+                Files.copy(fileParam.getInputStream(), targetLocation);
+
+                if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                    sourceBook.setFile(new SourceBook.FileInfo("uploads/" + filename));
+                }
+            } else {
+                if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                    return ResponseEntity.badRequest().build();
+                }
+                String existingPath = sourceBook.getFile().getPath();
+                if (existingPath.startsWith("uploads/")) {
+                    filename = existingPath.substring("uploads/".length());
+                } else {
+                    filename = Paths.get(existingPath).getFileName().toString();
+                }
+                targetLocation = Paths.get(existingPath).toAbsolutePath().normalize();
+            }
+            
+            File file = targetLocation.toFile();
+
+            if (!file.exists()) {
+                targetLocation = this.uploadPath.resolve(filename).normalize();
+                file = targetLocation.toFile();
+                if (!file.exists()) return ResponseEntity.badRequest().build();
+            }
+
+            List<SourceBook.SourceChunk> newChunks;
+            boolean isVideo = filename.toLowerCase().endsWith(".mp4") || 
+                              filename.toLowerCase().endsWith(".mkv") || 
+                              filename.toLowerCase().endsWith(".avi");
+                              
+            if (isVideo) {
+                newChunks = autoChunkService.autoChunkVideo(file, "uploads/" + filename);
+            } else {
+                newChunks = autoChunkService.autoChunkPdf(file, "uploads/" + filename);
+            }
+
+            return ResponseEntity.ok(newChunks);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/chunks/save-bulk")
+    public ResponseEntity<Void> saveBulkChunks(
+            @RequestParam("bookId") String bookId,
+            @RequestBody List<SourceBook.SourceChunk> chunksToSave) {
+        try {
+            SourceBookRegistry registry = xmlService.getSourceBookRegistry();
+            SourceBook sourceBook = registry.getBooks().stream()
+                    .filter(b -> b.getId().equals(bookId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (sourceBook == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            if (sourceBook.getChunks() == null) {
+                sourceBook.setChunks(new ArrayList<>());
+            }
+
+            if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            String existingPath = sourceBook.getFile().getPath();
+            String filename;
+            if (existingPath.startsWith("uploads/")) {
+                filename = existingPath.substring("uploads/".length());
+            } else {
+                filename = Paths.get(existingPath).getFileName().toString();
+            }
+            Path targetLocation = Paths.get(existingPath).toAbsolutePath().normalize();
+            if (!targetLocation.toFile().exists()) {
+                targetLocation = this.uploadPath.resolve(filename).normalize();
+            }
+            
+            for (SourceBook.SourceChunk chunk : chunksToSave) {
+                if (chunk.isVirtual() && chunk.getRange() != null) {
+                    String chunkType = chunk.getChunkType();
+                    SourceBook.Range range = chunk.getRange();
+                    if ("text".equalsIgnoreCase(chunkType) || "pdf".equalsIgnoreCase(chunkType)) {
+                        int startPage = range.getStartPage();
+                        int endPage = range.getEndPage();
+                        try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader.loadPDF(targetLocation.toFile())) {
+                            int totalPages = document.getNumberOfPages();
+                            int safeEndPage = Math.min(endPage, totalPages);
+                            int safeStartPage = Math.max(startPage, 1);
+                            if (safeStartPage <= safeEndPage && safeEndPage > 0) {
+                                for (int i = totalPages - 1; i >= safeEndPage; i--) {
+                                    if (i >= 0 && i < document.getNumberOfPages()) document.removePage(i);
+                                }
+                                for (int i = 0; i < safeStartPage - 1; i++) {
+                                    if (document.getNumberOfPages() > 0) document.removePage(0);
+                                }
+                            }
+                            String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename;
+                            Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                            document.save(newTargetLocation.toFile());
+                            chunk.setUri("uploads/" + newFilename);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if ("audio".equalsIgnoreCase(chunkType) || "video".equalsIgnoreCase(chunkType)) {
+                        String startTime = range.getStartTime();
+                        String endTime = range.getEndTime();
+                        String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename;
+                        Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                        try {
+                            ProcessBuilder pb = new ProcessBuilder(
+                                    "ffmpeg", "-y", 
+                                    "-i", targetLocation.toString(),
+                                    "-ss", startTime, 
+                                    "-to", endTime,
+                                    newTargetLocation.toString());
+                            pb.inheritIO();
+                            Process process = pb.start();
+                            if (process.waitFor() == 0) {
+                                chunk.setUri("uploads/" + newFilename);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                // Finally add chunk to registry
+                sourceBook.getChunks().add(chunk);
+            }
+            
+            xmlService.saveSourceBookRegistry(registry);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();

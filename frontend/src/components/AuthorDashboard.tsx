@@ -42,18 +42,20 @@ const AuthorDashboard: React.FC = () => {
     const [chunkType, setChunkType] = useState('text');
     const [isVirtual, setIsVirtual] = useState(false);
     const [price, setPrice] = useState('');
-    
+
     // Range State
     const [startPage, setStartPage] = useState('');
     const [endPage, setEndPage] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
-    
+
     const [file, setFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isAutoChunking, setIsAutoChunking] = useState(false);
+    const [proposedChunks, setProposedChunks] = useState<SourceChunk[] | null>(null);
 
     const fetchBooks = () => {
-        return fetch('/api/books/source')
+        return fetch(`/api/books/source?t=${Date.now()}`)
             .then(res => res.json())
             .then(data => {
                 setSourceBooks(data || []);
@@ -64,7 +66,7 @@ const AuthorDashboard: React.FC = () => {
 
     const fetchSelectedBook = async (bookId: string) => {
         try {
-            const res = await fetch(`/api/books/source/${bookId}`);
+            const res = await fetch(`/api/books/source/${bookId}?t=${Date.now()}`);
             if (res.ok) {
                 const book = await res.json();
                 setSelectedBook(book);
@@ -142,7 +144,7 @@ const AuthorDashboard: React.FC = () => {
                 setEndPage('');
                 setStartTime('');
                 setEndTime('');
-                
+
                 // Refresh book data to see new chunks
                 await fetchSelectedBook(selectedBook.id);
             }
@@ -164,6 +166,57 @@ const AuthorDashboard: React.FC = () => {
             }
         } catch (err) {
             console.error('Failed to delete chunk:', err);
+        }
+    };
+
+    const handleAutoChunk = async () => {
+        if (!selectedBook) return;
+        if (!file && !selectedBook.file?.path) return;
+
+        setIsAutoChunking(true);
+        const formData = new FormData();
+        if (file) {
+            formData.append('file', file);
+        }
+        formData.append('bookId', selectedBook.id);
+
+        try {
+            const res = await fetch(`/api/chunks/auto-chunk`, {
+                method: 'POST',
+                body: formData
+            });
+            if (res.ok) {
+                const chunks = await res.json();
+                if (chunks && chunks.length > 0) {
+                    setProposedChunks(chunks);
+                } else {
+                    alert('No chunks could be generated from this file.');
+                }
+            }
+        } catch (err) {
+            console.error('Error auto chunking:', err);
+        } finally {
+            setIsAutoChunking(false);
+        }
+    };
+
+    const handleSaveBulkChunks = async () => {
+        if (!selectedBook || !proposedChunks) return;
+        setIsUploading(true);
+        try {
+            const res = await fetch(`/api/chunks/save-bulk?bookId=${selectedBook.id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(proposedChunks)
+            });
+            if (res.ok) {
+                setProposedChunks(null);
+                await fetchSelectedBook(selectedBook.id);
+            }
+        } catch (err) {
+            console.error('Failed to save bulk chunks:', err);
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -275,7 +328,7 @@ const AuthorDashboard: React.FC = () => {
 
                 {step === 'chunking' && selectedBook && (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        
+
                         <div className="flex justify-between items-center mb-6">
                             <button onClick={() => setStep('select-flow')} className="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2">
                                 <ArrowLeft size={18} /> Back to Menu
@@ -289,7 +342,7 @@ const AuthorDashboard: React.FC = () => {
                         <div className="bg-white border text-gray-800 border-gray-200 rounded-2xl shadow-xl overflow-hidden mb-8">
                             <div className="bg-gray-50 border-b border-gray-200 p-6 sm:p-8">
                                 <h2 className="text-2xl font-bold mb-6 text-gray-900">1. Upload Content & Select Format</h2>
-                                
+
                                 <div className="flex flex-wrap gap-2 mb-6">
                                     {['text', 'pdf', 'audio', 'video'].map(type => (
                                         <button
@@ -297,8 +350,8 @@ const AuthorDashboard: React.FC = () => {
                                             type="button"
                                             onClick={() => setChunkType(type)}
                                             className={`px-5 py-2.5 rounded-full font-bold capitalize transition-all border-2
-                                                ${chunkType === type 
-                                                    ? 'bg-blue-600 border-blue-600 text-white shadow-md' 
+                                                ${chunkType === type
+                                                    ? 'bg-blue-600 border-blue-600 text-white shadow-md'
                                                     : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400'}`}
                                         >
                                             {type}
@@ -332,7 +385,7 @@ const AuthorDashboard: React.FC = () => {
                             <div className="p-6 sm:p-8 border-t border-gray-100">
                                 <h2 className="text-2xl font-bold mb-6 text-gray-900">2. Select Chunk Type & Metadata</h2>
                                 <form onSubmit={handleUploadChunk}>
-                                    
+
                                     <div className="flex gap-4 mb-8">
                                         <button
                                             type="button"
@@ -354,7 +407,7 @@ const AuthorDashboard: React.FC = () => {
                                     {isVirtual && (
                                         <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mb-6">
                                             <h4 className="font-semibold text-indigo-900 mb-4 flex items-center gap-2">Range Selection</h4>
-                                            
+
                                             {(chunkType === 'text' || chunkType === 'pdf') && (
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
@@ -394,15 +447,97 @@ const AuthorDashboard: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <button 
-                                        disabled={(!file && !selectedBook?.file?.path) || isUploading}
-                                        className="bg-blue-600 disabled:bg-blue-400 text-white font-bold py-4 px-8 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-lg transition-all flex items-center gap-2"
-                                    >
-                                        {isUploading ? 'Creating...' : <>Create Chunk <Plus size={20} /></>}
-                                    </button>
+                                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                                        <button
+                                            disabled={(!file && !selectedBook?.file?.path) || isUploading}
+                                            className="flex-1 bg-blue-600 disabled:bg-blue-400 text-white font-bold py-4 px-8 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                                        >
+                                            {isUploading ? 'Creating...' : <>Create Chunk <Plus size={20} /></>}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={handleAutoChunk}
+                                            disabled={(!file && !selectedBook?.file?.path) || isAutoChunking || isUploading}
+                                            className="flex-1 bg-purple-600 disabled:bg-purple-400 text-white font-bold py-4 px-8 rounded-xl shadow-md hover:bg-purple-700 hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                                        >
+                                            {isAutoChunking ? 'Auto-Chunking...' : 'Auto-Chunk (AI/Metadata) ✨'}
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
+
+                        {/* Proposed Chunks UI */}
+                        {proposedChunks && (
+                            <div className="bg-white border text-gray-800 border-gray-200 rounded-2xl shadow-xl overflow-hidden mb-8 p-6 animate-in fade-in slide-in-from-top-4">
+                                <h2 className="text-2xl font-bold mb-4 text-purple-900 border-b pb-4">
+                                    Review AI Generated Chunks
+                                </h2>
+                                <p className="text-gray-600 mb-6 font-medium">Review the proposed chunks below. You can rename them and set custom prices before saving.</p>
+
+                                <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
+                                    {proposedChunks.map((chunk, idx) => (
+                                        <div key={chunk.id} className="bg-purple-50 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center">
+                                            <div className="font-semibold text-purple-800 whitespace-nowrap bg-purple-200 px-3 py-1 rounded w-full md:w-auto text-center md:text-left">
+                                                Part #{idx + 1}
+                                            </div>
+                                            <div className="flex-[3] w-full">
+                                                <label className="text-xs text-gray-500 font-bold block mb-1">Title</label>
+                                                <input
+                                                    value={chunk.title}
+                                                    onChange={e => {
+                                                        const newChunks = [...proposedChunks];
+                                                        newChunks[idx].title = e.target.value;
+                                                        setProposedChunks(newChunks);
+                                                    }}
+                                                    className="w-full p-2 border border-purple-200 h-11 focus:ring focus:ring-purple-200 rounded outline-none"
+                                                />
+                                            </div>
+                                            <div className="flex-1 w-full relative">
+                                                <label className="text-xs text-gray-500 font-bold block mb-1">Price ($)</label>
+                                                <input
+                                                    type="text"
+                                                    value={chunk.price}
+                                                    onChange={e => {
+                                                        const newChunks = [...proposedChunks];
+                                                        newChunks[idx].price = parseFloat(e.target.value) || 0;
+                                                        setProposedChunks(newChunks);
+                                                    }}
+                                                    className="w-full p-2 pl-6 h-11 border border-purple-200 focus:ring focus:ring-purple-200 rounded outline-none"
+                                                />
+                                                <span className="absolute left-2 top-[31px] font-bold text-gray-400">$</span>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    const newChunks = proposedChunks.filter((_, i) => i !== idx);
+                                                    setProposedChunks(newChunks.length ? newChunks : null);
+                                                }}
+                                                className="text-red-500 hover:text-red-700 md:mt-5 p-2 h-11 border border-red-200 bg-white hover:bg-red-50 rounded flex items-center justify-center w-full md:w-auto transition-colors"
+                                                title="Remove Chunk"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                                    <button
+                                        onClick={() => setProposedChunks(null)}
+                                        className="bg-gray-100 text-gray-600 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        disabled={isUploading}
+                                        onClick={handleSaveBulkChunks}
+                                        className="bg-purple-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-700 shadow-md flex items-center gap-2 transition-colors disabled:bg-purple-400"
+                                    >
+                                        {isUploading ? 'Saving Chunks...' : 'Save AI Chunks'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Created Chunks List */}
                         <div className="mb-10">
@@ -410,7 +545,7 @@ const AuthorDashboard: React.FC = () => {
                                 <span className="bg-green-100 text-green-800 w-8 h-8 rounded-full flex items-center justify-center text-sm">{selectedBook?.chunks?.length || 0}</span>
                                 Created Chunks
                             </h2>
-                            
+
                             {(!selectedBook.chunks || selectedBook.chunks.length === 0) ? (
                                 <div className="text-gray-500 bg-gray-100 p-8 rounded-xl border border-dashed border-gray-300 text-center">
                                     No chunks created yet. Add one above!
@@ -432,7 +567,7 @@ const AuthorDashboard: React.FC = () => {
                                                     <p>Price: ${chunk.price.toFixed(2)}</p>
                                                     {chunk.virtual && chunk.range && (
                                                         <p className="bg-indigo-50 text-indigo-700 px-2 py-1 inline-block rounded mt-1">
-                                                            {(chunk.chunkType === 'text' || chunk.chunkType === 'pdf') 
+                                                            {(chunk.chunkType === 'text' || chunk.chunkType === 'pdf')
                                                                 ? `Pages: ${chunk.range.startPage} - ${chunk.range.endPage}`
                                                                 : `Time: ${chunk.range.startTime} - ${chunk.range.endTime}`
                                                             }
@@ -448,8 +583,8 @@ const AuthorDashboard: React.FC = () => {
 
                         {/* Submit returning to Dashboard root */}
                         <div className="flex justify-center mt-12 mb-10 pb-10">
-                            <button 
-                                onClick={() => setStep('select-flow')} 
+                            <button
+                                onClick={() => setStep('select-flow')}
                                 className="bg-green-600 text-white font-bold text-lg py-4 px-12 rounded-full shadow-lg hover:bg-green-700 hover:scale-105 transition-all text-center tracking-wide"
                             >
                                 SUBMIT AND FINISH BOOK

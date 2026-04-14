@@ -2,9 +2,12 @@
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/controller/ChunkController.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/controller/BookController.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/EbookAssemblyApplication.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/Book.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/XmlService.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/AutoChunkService.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/EpubExportService.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/config/WebConfig.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/SourceBook.java
 /home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/SourceBookRegistry.java
-/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/model/Book.java
-/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/XmlService.java
-/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/EpubExportService.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/ebook/service/AiChunkingService.java
+/home/abhinav-sharma/Desktop/Custom-E-Book/backend/src/main/java/com/example/test/TestOutline.java

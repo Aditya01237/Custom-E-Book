@@ -178,6 +178,7 @@ const StudentDashboard: React.FC = () => {
                     </div>
                 );
             case 'text':
+            case 'pdf':
                 if (isPdf) {
                     return (
                         <div className="rounded-xl overflow-hidden border">
