@@ -98,7 +98,8 @@ public class ChunkController {
             @RequestParam(value = "startPage", required = false, defaultValue = "0") int startPage,
             @RequestParam(value = "endPage", required = false, defaultValue = "0") int endPage,
             @RequestParam(value = "startTime", required = false) String startTime,
-            @RequestParam(value = "endTime", required = false) String endTime) {
+            @RequestParam(value = "endTime", required = false) String endTime,
+            @RequestParam(value = "driveUrl", required = false) String driveUrl) {
 
         try {
             // Find the source book
@@ -113,10 +114,12 @@ public class ChunkController {
             }
 
             // Save file or resolve existing
-            Path targetLocation;
-            String filename;
+            Path targetLocation = null;
+            String filename = null;
             
-            if (file != null && !file.isEmpty()) {
+            if (driveUrl != null && !driveUrl.isBlank()) {
+                filename = "gdrive_link";
+            } else if (file != null && !file.isEmpty()) {
                 filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
                 targetLocation = this.uploadPath.resolve(filename);
                 Files.copy(file.getInputStream(), targetLocation);
@@ -144,70 +147,94 @@ public class ChunkController {
             chunk.setId(UUID.randomUUID().toString());
             chunk.setTitle(title);
             chunk.setChunkType(chunkType);
-            chunk.setVirtual(isVirtual);
             chunk.setPrice(price);
-            chunk.setUri("uploads/" + filename);
 
-            if (isVirtual) {
-                SourceBook.Range range = new SourceBook.Range();
-                if ("text".equalsIgnoreCase(chunkType) || "pdf".equalsIgnoreCase(chunkType)) {
-                    range.setStartPage(startPage);
-                    range.setEndPage(endPage);
-                    try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader
-                            .loadPDF(targetLocation.toFile())) {
-                        int totalPages = document.getNumberOfPages();
-                        
-                        // Prevent out of bounds
-                        int safeEndPage = Math.min(endPage, totalPages);
-                        int safeStartPage = Math.max(startPage, 1);
-                        
-                        if (safeStartPage <= safeEndPage && safeEndPage > 0) {
-                            for (int i = totalPages - 1; i >= safeEndPage; i--) {
-                                if (i >= 0 && i < document.getNumberOfPages())
-                                    document.removePage(i);
+            if (driveUrl != null && !driveUrl.isBlank()) {
+                chunk.setUri(driveUrl);
+                chunk.setVirtual(false); // Remote URLs are inherently physical chunks
+            } else {
+                chunk.setVirtual(isVirtual);
+                chunk.setUri("uploads/" + filename);
+
+                if (isVirtual && targetLocation != null) {
+                    SourceBook.Range range = new SourceBook.Range();
+                    if ("text".equalsIgnoreCase(chunkType) || "pdf".equalsIgnoreCase(chunkType)) {
+                        range.setStartPage(startPage);
+                        range.setEndPage(endPage);
+                        try {
+                            String filePathLower = targetLocation.toString().toLowerCase();
+                            if (filePathLower.endsWith(".pdf")) {
+                                try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader.loadPDF(targetLocation.toFile())) {
+                                    int totalPages = document.getNumberOfPages();
+                                    int safeEndPage = Math.min(endPage, totalPages);
+                                    int safeStartPage = Math.max(startPage, 1);
+                                    if (safeStartPage <= safeEndPage && safeEndPage > 0) {
+                                        for (int i = totalPages - 1; i >= safeEndPage; i--) {
+                                            if (i >= 0 && i < document.getNumberOfPages()) document.removePage(i);
+                                        }
+                                        for (int i = 0; i < safeStartPage - 1; i++) {
+                                            if (document.getNumberOfPages() > 0) document.removePage(0);
+                                        }
+                                    }
+                                    String newFilename = "trimmed_" + filename;
+                                    Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                                    document.save(newTargetLocation.toFile());
+                                    chunk.setUri("uploads/" + newFilename);
+                                }
+                            } else {
+                                // Trim as text lines (approx 40 lines per page)
+                                List<String> lines = Files.readAllLines(targetLocation);
+                                int linesPerPage = 40;
+                                int totalPages = (int) Math.ceil((double) lines.size() / linesPerPage);
+                                int safeEndPage = Math.min(endPage > 0 ? endPage : totalPages, totalPages);
+                                int safeStartPage = Math.max(startPage, 1);
+                                
+                                int startLine = (safeStartPage - 1) * linesPerPage;
+                                int endLine = Math.min(safeEndPage * linesPerPage, lines.size());
+                                
+                                List<String> trimmedLines = new ArrayList<>();
+                                if (startLine < lines.size() && startLine <= endLine) {
+                                    trimmedLines = lines.subList(startLine, endLine);
+                                }
+                                
+                                String newFilename = "trimmed_" + filename + ".txt";
+                                Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                                Files.write(newTargetLocation, trimmedLines);
+                                chunk.setUri("uploads/" + newFilename);
                             }
-                            for (int i = 0; i < safeStartPage - 1; i++) {
-                                if (document.getNumberOfPages() > 0)
-                                    document.removePage(0);
-                            }
-                        }
-                        
-                        String newFilename = "trimmed_" + filename;
-                        Path newTargetLocation = this.uploadPath.resolve(newFilename);
-                        document.save(newTargetLocation.toFile());
-                        chunk.setUri("uploads/" + newFilename);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return ResponseEntity.status(500).build();
-                    }
-                } else if ("audio".equalsIgnoreCase(chunkType) || "video".equalsIgnoreCase(chunkType)) {
-                    // if Chunk type is audio/video then use timestamps for range
-                    range.setStartTime(startTime);
-                    range.setEndTime(endTime);
-                    String newFilename = "trimmed_" + filename;
-                    Path newTargetLocation = this.uploadPath.resolve(newFilename);
-                    try {
-                        ProcessBuilder pb = new ProcessBuilder(
-                                "ffmpeg", "-y", 
-                                "-i", targetLocation.toString(),
-                                "-ss", startTime, 
-                                "-to", endTime,
-                                newTargetLocation.toString());
-                        pb.inheritIO();
-                        Process process = pb.start();
-                        int exitCode = process.waitFor();
-                        if (exitCode == 0) {
-                            chunk.setUri("uploads/" + newFilename);
-                        } else {
-                            System.err.println("FFmpeg failed with exit code " + exitCode);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                             return ResponseEntity.status(500).build();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return ResponseEntity.status(500).build();
+                    } else if ("audio".equalsIgnoreCase(chunkType) || "video".equalsIgnoreCase(chunkType)) {
+                        // if Chunk type is audio/video then use timestamps for range
+                        range.setStartTime(startTime);
+                        range.setEndTime(endTime);
+                        String newFilename = "trimmed_" + filename;
+                        Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                        try {
+                            ProcessBuilder pb = new ProcessBuilder(
+                                    "ffmpeg", "-y", 
+                                    "-i", targetLocation.toString(),
+                                    "-ss", startTime, 
+                                    "-to", endTime,
+                                    newTargetLocation.toString());
+                            pb.inheritIO();
+                            Process process = pb.start();
+                            int exitCode = process.waitFor();
+                            if (exitCode == 0) {
+                                chunk.setUri("uploads/" + newFilename);
+                            } else {
+                                System.err.println("FFmpeg failed with exit code " + exitCode);
+                                return ResponseEntity.status(500).build();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return ResponseEntity.status(500).build();
+                        }
                     }
+                    chunk.setRange(range);
                 }
-                chunk.setRange(range);
             }
 
             // Add chunk to book
@@ -358,22 +385,46 @@ public class ChunkController {
                     if ("text".equalsIgnoreCase(chunkType) || "pdf".equalsIgnoreCase(chunkType)) {
                         int startPage = range.getStartPage();
                         int endPage = range.getEndPage();
-                        try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader.loadPDF(targetLocation.toFile())) {
-                            int totalPages = document.getNumberOfPages();
-                            int safeEndPage = Math.min(endPage, totalPages);
-                            int safeStartPage = Math.max(startPage, 1);
-                            if (safeStartPage <= safeEndPage && safeEndPage > 0) {
-                                for (int i = totalPages - 1; i >= safeEndPage; i--) {
-                                    if (i >= 0 && i < document.getNumberOfPages()) document.removePage(i);
+                        try {
+                            String filePathLower = targetLocation.toString().toLowerCase();
+                            if (filePathLower.endsWith(".pdf")) {
+                                try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.Loader.loadPDF(targetLocation.toFile())) {
+                                    int totalPages = document.getNumberOfPages();
+                                    int safeEndPage = Math.min(endPage, totalPages);
+                                    int safeStartPage = Math.max(startPage, 1);
+                                    if (safeStartPage <= safeEndPage && safeEndPage > 0) {
+                                        for (int i = totalPages - 1; i >= safeEndPage; i--) {
+                                            if (i >= 0 && i < document.getNumberOfPages()) document.removePage(i);
+                                        }
+                                        for (int i = 0; i < safeStartPage - 1; i++) {
+                                            if (document.getNumberOfPages() > 0) document.removePage(0);
+                                        }
+                                    }
+                                    String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename;
+                                    Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                                    document.save(newTargetLocation.toFile());
+                                    chunk.setUri("uploads/" + newFilename);
                                 }
-                                for (int i = 0; i < safeStartPage - 1; i++) {
-                                    if (document.getNumberOfPages() > 0) document.removePage(0);
+                            } else {
+                                List<String> lines = Files.readAllLines(targetLocation);
+                                int linesPerPage = 40;
+                                int totalPages = (int) Math.ceil((double) lines.size() / linesPerPage);
+                                int safeEndPage = Math.min(endPage > 0 ? endPage : totalPages, totalPages);
+                                int safeStartPage = Math.max(startPage, 1);
+                                
+                                int startLine = (safeStartPage - 1) * linesPerPage;
+                                int endLine = Math.min(safeEndPage * linesPerPage, lines.size());
+                                
+                                List<String> trimmedLines = new ArrayList<>();
+                                if (startLine < lines.size() && startLine <= endLine) {
+                                    trimmedLines = lines.subList(startLine, endLine);
                                 }
+                                
+                                String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename + ".txt";
+                                Path newTargetLocation = this.uploadPath.resolve(newFilename);
+                                Files.write(newTargetLocation, trimmedLines);
+                                chunk.setUri("uploads/" + newFilename);
                             }
-                            String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename;
-                            Path newTargetLocation = this.uploadPath.resolve(newFilename);
-                            document.save(newTargetLocation.toFile());
-                            chunk.setUri("uploads/" + newFilename);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
