@@ -1,213 +1,778 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <SourceBookRegistry>
-    <book id="book1">
-        <title>Database Systems</title>
-        <author>Navathe</author>
+    <book id="bce73c4a-3b8f-4991-a0ff-7931891b8909">
+        <title>Sample book</title>
+        <author>ABCD</author>
         <file>
-            <path>/files/database_book.pdf</path>
+            <path>uploads/36eb9028-e1f9-4758-bd14-b95be0b7d77c_lmbench3-measuring-scalability.pdf</path>
         </file>
         <chunks>
-            <chunk id="c1">
-                <title>Introduction</title>
-                <chunkType>virtual</chunkType>
-                <isVirtual>false</isVirtual>
+            <chunk id="319eb0f0-0a81-41eb-9cc8-56b863f6578f">
+                <title>chunkname</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
                 <range>
                     <startPage>1</startPage>
-                    <endPage>10</endPage>
+                    <endPage>5</endPage>
                 </range>
-                <price>5.99</price>
+                <price>1.5</price>
+                <uri>uploads/trimmed_36eb9028-e1f9-4758-bd14-b95be0b7d77c_lmbench3-measuring-scalability.pdf</uri>
             </chunk>
-            <chunk id="c2">
-                <title>Relational Model</title>
-                <chunkType>virtual</chunkType>
-                <isVirtual>false</isVirtual>
+            <chunk id="cc093cc5-95c0-4938-92f6-517ed8874684">
+                <title>chunk2</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
                 <range>
-                    <startPage>11</startPage>
+                    <startPage>6</startPage>
+                    <endPage>8</endPage>
+                </range>
+                <price>9.9</price>
+                <uri>uploads/trimmed_8089540b-57ce-45ee-b6a9-eebf004a5231_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="862d8414-46bf-4fed-9eac-2a0c19f9497f">
+                <title>videochunk</title>
+                <chunkType>video</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>0</startPage>
+                    <endPage>0</endPage>
+                    <startTime>00:00:05</startTime>
+                    <endTime>00:00:12</endTime>
+                </range>
+                <price>55.0</price>
+                <uri>uploads/trimmed_104d6cc0-d6b9-4ab5-866f-eb903d65dfb0_Screencast from 2026-03-27 16-13-34.mp4</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="e5c7ab49-3c25-4301-8385-2f22b610b348">
+        <title>Sample Book</title>
+        <author>Abcd</author>
+        <file>
+            <path>uploads/11c89fd5-e509-4129-9307-296a2925c566_lmbench3-measuring-scalability.pdf</path>
+        </file>
+        <chunks>
+            <chunk id="10b3f8cd-f4b9-4751-87de-f88b257bd684">
+                <title>Chunk01</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>5</endPage>
+                </range>
+                <price>2.5</price>
+                <uri>uploads/trimmed_11c89fd5-e509-4129-9307-296a2925c566_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="875084aa-3884-4083-ae3e-c4557df988d9">
+                <title>Chunk02</title>
+                <chunkType>text</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>9</endPage>
+                </range>
+                <price>10.99</price>
+                <uri>uploads/trimmed_85815a82-b653-4b39-aa79-063533bf6d9e_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="72d3e851-01c0-4db7-9948-b02d9422ec8b">
+        <title>final book</title>
+        <author>auth xyz</author>
+        <file>
+            <path>uploads/75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</path>
+        </file>
+        <chunks>
+            <chunk id="3b6a09bb-301b-43a3-8dad-6f6133e60d61">
+                <title>Introduction</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>5</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_4d8ea84e_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="75a45aad-4e52-4b89-b046-a3dc356b1d40">
+                <title>Dataset and Objectives</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>6</endPage>
+                </range>
+                <price>3.0</price>
+                <uri>uploads/trimmed_7dc79433_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="e18600da-0e4f-474e-8c46-315a4d3a1a53">
+                <title>Exploratory Data Analysis</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>7</startPage>
+                    <endPage>12</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_0ff2b54a_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="6eb3105f-b2c9-4491-9997-a7bde37281f0">
+                <title>Data Preprocessing</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>13</startPage>
+                    <endPage>13</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_422adadc_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="8cf8838f-2414-43b7-bdc1-21dca2a7bcfd">
+                <title>Model Development</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>14</startPage>
+                    <endPage>18</endPage>
+                </range>
+                <price>4.0</price>
+                <uri>uploads/trimmed_85ba6828_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="48425a89-11ae-45e0-99c8-55e623bf7c55">
+                <title>Results and Comparison</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>19</startPage>
+                    <endPage>19</endPage>
+                </range>
+                <price>5.0</price>
+                <uri>uploads/trimmed_a9614f1d_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="32d4e2e5-6b59-448a-80cc-9df7bfff4756">
+                <title>Test Set Predictions</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>20</startPage>
                     <endPage>20</endPage>
                 </range>
-                <price>7.99</price>
+                <price>5.0</price>
+                <uri>uploads/trimmed_96c6c3dd_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
             </chunk>
-            <chunk id="c3">
-                <title>Transactions</title>
-                <chunkType>virtual</chunkType>
-                <isVirtual>false</isVirtual>
+            <chunk id="fbdcf4cf-9e96-40cd-a9e7-e73e56dc0fb5">
+                <title>Discussion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
                 <range>
                     <startPage>21</startPage>
-                    <endPage>30</endPage>
+                    <endPage>21</endPage>
                 </range>
-                <price>6.99</price>
+                <price>2.0</price>
+                <uri>uploads/trimmed_dcdf28d7_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
             </chunk>
-            <chunk id="03c59292-2bbc-448f-a805-b12d73ff2207">
-                <title>XML</title>
-                <chunkType>video</chunkType>
-                <isVirtual>false</isVirtual>
-                <price>89.0</price>
-                <uri>uploads/c2f83a03-0d91-4b4a-b7e3-85b1fdc06fe5_XMLVIdeo.mp4</uri>
+            <chunk id="7e881c24-3ef3-4eb8-bfcf-7a48f80fb570">
+                <title>Conclusion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>22</startPage>
+                    <endPage>23</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_a2669f98_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="7d9ff0d2-a138-455f-8813-162e67759299">
+                <title>Code Snippets</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>24</startPage>
+                    <endPage>25</endPage>
+                </range>
+                <price>4.0</price>
+                <uri>uploads/trimmed_90cd66e5_75355a12-122f-415a-8be8-91d40a07d7ab_AIT511__Course_Project_1__Copy_.pdf</uri>
             </chunk>
         </chunks>
     </book>
-    <book id="786b5eb8-6d59-4860-a0f6-d77c61034ace">
-        <title>Databases</title>
-        <author>Abhinav</author>
+    <book id="a7c91552-eed2-4f4b-bb26-747610d6b255">
+        <title>Data Modeling</title>
+        <author>R.Ashwin</author>
+        <file>
+            <path>uploads/875c1982-5874-42ab-a4f0-5475f42376f4_ssp.pdf</path>
+        </file>
+        <chunks/>
+    </book>
+    <book id="5459db18-8fe1-4313-952a-daeac4263ae2">
+        <title>SSP</title>
+        <author>R.Ashwin</author>
+        <file>
+            <path>uploads/879b4438-eecd-4466-abd8-ee6f27450aa3_ssp.pdf</path>
+        </file>
         <chunks>
-            <chunk id="45fb608e-3c54-4f31-a3f2-deb371906aed">
-                <title>Intro</title>
-                <chunkType>virtual</chunkType>
-                <isVirtual>false</isVirtual>
-                <range>
-                    <startPage>0</startPage>
-                    <endPage>1</endPage>
-                </range>
-                <price>45.0</price>
-                <uri>uploads/c19f6dc9-e721-44d4-8dc1-3a06a433dd1c_AUD-20260216-WA0010 (1).pdf</uri>
-            </chunk>
-            <chunk id="05baedd8-7dc1-40f8-8897-5ff15791526a">
-                <title>Video</title>
-                <chunkType>video</chunkType>
-                <isVirtual>false</isVirtual>
-                <price>45.0</price>
-                <uri>uploads/82b4e9f2-b79d-4bc3-a645-f58fc9a2e00e_TV Library.tvlibrary.zip</uri>
-            </chunk>
-            <chunk id="a5bfa3c9-035e-4a02-9af0-6f417e402598">
-                <title>video1</title>
-                <chunkType>video</chunkType>
-                <isVirtual>false</isVirtual>
-                <price>34.0</price>
-                <uri>uploads/e0069e67-5db1-43f7-9e89-69233c88dc67_WhatsApp Video 2026-03-16 at 15.01.03.mp4</uri>
-            </chunk>
-            <chunk id="1dc6ed63-ff10-4022-b275-ea104b639c4a">
-                <title>Mypage</title>
-                <chunkType>virtual</chunkType>
-                <isVirtual>false</isVirtual>
-                <range>
-                    <startPage>3</startPage>
-                    <endPage>4</endPage>
-                </range>
-                <price>23.0</price>
-                <uri>uploads/48f13ff8-ee5c-4bd0-a579-832766e7810b_NLP-Assignemtn-2_MT2025015.pdf</uri>
-            </chunk>
-            <chunk id="7a7bd018-d01b-4bfb-8a37-9de267c0e0d7">
-                <title>MY XML VIdeo</title>
-                <chunkType>video</chunkType>
-                <isVirtual>false</isVirtual>
-                <price>90.0</price>
-                <uri>uploads/9002eb28-61e7-408d-804d-1add913f201c_XMLVIdeo.mp4</uri>
-            </chunk>
-            <chunk id="81d23ab5-6421-40f7-b230-2535b120bd26">
-                <title>XML New Video</title>
-                <chunkType>video</chunkType>
-                <isVirtual>true</isVirtual>
-                <range>
-                    <startPage>0</startPage>
-                    <endPage>0</endPage>
-                    <startTime>01:00</startTime>
-                    <endTime>02:00</endTime>
-                </range>
-                <price>89.0</price>
-                <uri>uploads/trimmed_ca8e171f-e81a-4478-bc7c-43a3cd1108ef_XMLVIdeo.mp4</uri>
-            </chunk>
-            <chunk id="09ebe9d9-054d-4c6e-b4bc-efb98e5f166a">
-                <title>XML</title>
-                <chunkType>video</chunkType>
-                <isVirtual>true</isVirtual>
-                <range>
-                    <startPage>0</startPage>
-                    <endPage>0</endPage>
-                    <startTime>1</startTime>
-                    <endTime>2</endTime>
-                </range>
-                <price>65.0</price>
-                <uri>uploads/trimmed_90b05186-b9fa-4e91-aa9d-8876e6530287_XMLVIdeo.mp4</uri>
-            </chunk>
-            <chunk id="b6da9612-a710-4aa5-a739-74a1611ea7ba">
-                <title>xml_video</title>
-                <chunkType>video</chunkType>
-                <isVirtual>true</isVirtual>
-                <range>
-                    <startPage>0</startPage>
-                    <endPage>0</endPage>
-                    <startTime>01:00</startTime>
-                    <endTime>02:00</endTime>
-                </range>
-                <price>35.0</price>
-                <uri>uploads/trimmed_eb737c81-acad-4ee5-878b-60725835b4ba_XMLVIdeo.mp4</uri>
-            </chunk>
-            <chunk id="0bbad591-c8d3-4365-a9fe-f62af709ecae">
-                <title>Transictions</title>
-                <chunkType>text</chunkType>
+            <chunk id="41364982-06ff-4bad-8cda-832909f19120">
+                <title>Part 1</title>
+                <chunkType>pdf</chunkType>
                 <isVirtual>true</isVirtual>
                 <range>
                     <startPage>1</startPage>
                     <endPage>1</endPage>
                 </range>
-                <price>65.0</price>
-                <uri>uploads/trimmed_aa6aa65b-d97c-4fe5-b81e-fc38a890b9b1_NLP-Assignemtn-2_MT2025015.pdf</uri>
+                <price>12.0</price>
+                <uri>uploads/trimmed_655796e5_879b4438-eecd-4466-abd8-ee6f27450aa3_ssp.pdf</uri>
             </chunk>
-        </chunks>
-    </book>
-    <book id="f66af4ef-edd4-4c3b-9d5a-3cf85dca06ac">
-        <title>Test Book</title>
-        <author>Test Author</author>
-        <chunks>
-            <chunk id="5b8c30a5-cda5-4bcb-b04e-972ab4bbf039">
-                <title>XML</title>
-                <chunkType>video</chunkType>
+            <chunk id="9000ae05-a695-4a4f-ba17-a487400b2bfa">
+                <title>Part 2</title>
+                <chunkType>pdf</chunkType>
                 <isVirtual>true</isVirtual>
                 <range>
-                    <startPage>0</startPage>
-                    <endPage>0</endPage>
-                    <startTime>01:00</startTime>
-                    <endTime>02:00</endTime>
+                    <startPage>2</startPage>
+                    <endPage>2</endPage>
                 </range>
-                <price>43.0</price>
-                <uri>uploads/trimmed_bcaf8e86-203f-4867-a3ff-da2401446fb3_XMLVIdeo.mp4</uri>
+                <price>13.0</price>
+                <uri>uploads/trimmed_56bc30c8_879b4438-eecd-4466-abd8-ee6f27450aa3_ssp.pdf</uri>
             </chunk>
-            <chunk id="a176045f-3f79-482a-87a3-094eb3bb26e8">
-                <title>XML</title>
-                <chunkType>text</chunkType>
-                <isVirtual>false</isVirtual>
-                <price>34.0</price>
-                <uri>uploads/6d50647b-4f7e-499f-8c56-355b34a3c581_XMLVIdeo.mp4</uri>
+            <chunk id="21a9bdab-3a2a-40a7-97a5-737ac9afc153">
+                <title>Part 3</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>3</startPage>
+                    <endPage>3</endPage>
+                </range>
+                <price>14.0</price>
+                <uri>uploads/trimmed_ad7fbde4_879b4438-eecd-4466-abd8-ee6f27450aa3_ssp.pdf</uri>
+            </chunk>
+            <chunk id="9350cb13-960c-4a8c-a038-878483effe87">
+                <title>Part 4</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>4</startPage>
+                    <endPage>4</endPage>
+                </range>
+                <price>15.0</price>
+                <uri>uploads/trimmed_5e33a852_879b4438-eecd-4466-abd8-ee6f27450aa3_ssp.pdf</uri>
+            </chunk>
+            <chunk id="0b7ae5e5-25b2-4369-bb44-27324341aaae">
+                <title>Part 5</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>5</endPage>
+                </range>
+                <price>16.0</price>
+                <uri>uploads/trimmed_d56e0dc3_879b4438-eecd-4466-abd8-ee6f27450aa3_ssp.pdf</uri>
             </chunk>
         </chunks>
     </book>
-    <book id="749d3f2e-6b3d-4e5a-a429-20279edddb53">
-        <title>Databases</title>
-        <author>Dr. Chandrashekar Ramanathan</author>
+    <book id="b33d3109-86e6-4537-a16a-6c93210a88bc">
+        <title>ML</title>
+        <author>abcd</author>
+        <file>
+            <path>uploads/12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</path>
+        </file>
+        <chunks>
+            <chunk id="0cbf91b9-87ee-44db-82f9-f9b489c3d106">
+                <title>Introduction</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>5</endPage>
+                </range>
+                <price>8.0</price>
+                <uri>uploads/trimmed_5cc776f1_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="2cb0c370-5a23-4c8f-b9ad-5106d0616487">
+                <title>Dataset and Objectives</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>6</endPage>
+                </range>
+                <price>4.0</price>
+                <uri>uploads/trimmed_fc320129_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="d296738e-6c48-4b84-bafd-c80e2a106083">
+                <title>Exploratory Data Analysis</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>7</startPage>
+                    <endPage>12</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_f34f4481_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="8b81cfc0-696b-4cb6-aacb-373719b8c777">
+                <title>Data Preprocessing</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>13</startPage>
+                    <endPage>13</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_e78230b0_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="ab33ffb8-7d34-43fd-bf01-b97cad7e3adf">
+                <title>Model Development</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>14</startPage>
+                    <endPage>18</endPage>
+                </range>
+                <price>40.0</price>
+                <uri>uploads/trimmed_c1410247_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="46a977d7-eee8-487a-bc92-961ec52044a6">
+                <title>Results and Comparison</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>19</startPage>
+                    <endPage>19</endPage>
+                </range>
+                <price>45.0</price>
+                <uri>uploads/trimmed_55f8ae94_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="ec28a8f4-2024-422f-a2c9-4f0799f7ad56">
+                <title>Test Set Predictions</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>20</startPage>
+                    <endPage>20</endPage>
+                </range>
+                <price>6.0</price>
+                <uri>uploads/trimmed_708d2047_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="7f906c49-78b4-49ad-a768-5c20e60e1c53">
+                <title>Discussion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>21</startPage>
+                    <endPage>21</endPage>
+                </range>
+                <price>8.0</price>
+                <uri>uploads/trimmed_90da3607_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="3324cf40-770d-4cdb-a34f-3bbe42a0c17f">
+                <title>Conclusion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>22</startPage>
+                    <endPage>23</endPage>
+                </range>
+                <price>4.0</price>
+                <uri>uploads/trimmed_f33a37b6_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="34ddd59f-a0cd-411d-ab45-baac9dc0f99f">
+                <title>Code Snippets</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>24</startPage>
+                    <endPage>25</endPage>
+                </range>
+                <price>9.0</price>
+                <uri>uploads/trimmed_6ca59543_12dd93c6-e28d-4d8e-a9c0-5199a6a0ae3b_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="5c166f7d-e16d-44b0-879f-e48a4c3c0832">
+        <title>ssp</title>
+        <author>spp</author>
         <chunks/>
     </book>
-    <book id="0873fc53-0c1a-4dc8-a7fb-158b698c0c3c">
-        <title>Data Modeling</title>
-        <author>Prof. Chandrashekar Ramanathan</author>
+    <book id="cebe9cef-2d04-418c-b0f8-84b52e3a534e">
+        <title>aibook</title>
+        <author>gemini</author>
+        <file>
+            <path>uploads/bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</path>
+        </file>
         <chunks>
-            <chunk id="a6f00abc-5ba8-4297-abba-7a42c0bbdd03">
-                <title>XML</title>
-                <chunkType>text</chunkType>
+            <chunk id="67429037-6c38-42e9-9b1e-59ca9b613d97">
+                <title>Part 1</title>
+                <chunkType>pdf</chunkType>
                 <isVirtual>true</isVirtual>
                 <range>
                     <startPage>1</startPage>
                     <endPage>2</endPage>
                 </range>
-                <price>45.0</price>
-                <uri>uploads/trimmed_0ecbc562-2e12-4179-8326-90e9b6c7c153_NLP-Assignemtn-2_MT2025015.pdf</uri>
+                <price>6.0</price>
+                <uri>uploads/trimmed_ef049c07_bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</uri>
+            </chunk>
+            <chunk id="60ef8156-0d0c-42ac-8edc-c8422fde9152">
+                <title>Part 2</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>3</startPage>
+                    <endPage>4</endPage>
+                </range>
+                <price>50.0</price>
+                <uri>uploads/trimmed_98e8eeb1_bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</uri>
+            </chunk>
+            <chunk id="8d23793a-c60e-472b-beea-12cd965152d3">
+                <title>Part 3</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>6</endPage>
+                </range>
+                <price>4.0</price>
+                <uri>uploads/trimmed_944ca790_bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</uri>
+            </chunk>
+            <chunk id="d22b6595-5465-4485-b293-bd82fb4e1ccf">
+                <title>Part 4</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>7</startPage>
+                    <endPage>8</endPage>
+                </range>
+                <price>3.0</price>
+                <uri>uploads/trimmed_e5214bd8_bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</uri>
+            </chunk>
+            <chunk id="4f457b4c-fe2f-4dce-af4c-32f09f2b8a19">
+                <title>Part 5</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>9</startPage>
+                    <endPage>10</endPage>
+                </range>
+                <price>7.0</price>
+                <uri>uploads/trimmed_363ef996_bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</uri>
+            </chunk>
+            <chunk id="0d896607-364c-4699-bf7f-0c9ea8af90bd">
+                <title>Part 6</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>11</startPage>
+                    <endPage>12</endPage>
+                </range>
+                <price>10.0</price>
+                <uri>uploads/trimmed_0b0a54ba_bfd17e6f-f030-4174-9130-1f5f837e6221_ssp.pdf</uri>
             </chunk>
         </chunks>
     </book>
-    <book id="f8dc2764-87ba-430d-8077-7374ed1683b5">
-        <title>XML</title>
-        <author>Aditya</author>
+    <book id="9940fd6e-57f8-489e-875d-d4fb75e61104">
+        <title>ssp</title>
+        <author>ssp</author>
+        <chunks/>
+    </book>
+    <book id="793a204e-e561-487e-87a1-33c5e5a60dc2">
+        <title>ssp</title>
+        <author>ssp</author>
+        <chunks/>
+    </book>
+    <book id="129c9406-1ae8-4cce-9cff-3b8452ae8c90">
+        <title>ssp</title>
+        <author>ssp</author>
+        <file>
+            <path>uploads/4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</path>
+        </file>
         <chunks>
-            <chunk id="3697a84a-f114-4e83-a865-98bfdc128f3d">
-                <title>NLP</title>
-                <chunkType>text</chunkType>
+            <chunk id="39fbe7ea-3447-4714-8d46-723011cd3fe8">
+                <title>1 Introduction</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>1</endPage>
+                </range>
+                <price>12.0</price>
+                <uri>uploads/trimmed_ebfa5629_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
+            </chunk>
+            <chunk id="c4d7b237-da7c-4c0c-b617-a24415582c78">
+                <title>2 Early Work</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>1</endPage>
+                </range>
+                <price>12.0</price>
+                <uri>uploads/trimmed_8495ffcc_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
+            </chunk>
+            <chunk id="5c09a48b-0740-4b5f-a527-cbf39f0681c2">
+                <title>3 Scope, Proposal and Target</title>
+                <chunkType>pdf</chunkType>
                 <isVirtual>true</isVirtual>
                 <range>
                     <startPage>2</startPage>
-                    <endPage>10</endPage>
+                    <endPage>2</endPage>
                 </range>
-                <price>67.0</price>
-                <uri>uploads/trimmed_b2cb6606-9011-40e0-96c5-1df7402a3971_NLP-Assignemtn-2_MT2025015.pdf</uri>
+                <price>13.0</price>
+                <uri>uploads/trimmed_958b225e_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
+            </chunk>
+            <chunk id="4f52cedf-94d7-4ab0-87d3-fbb00d63bb7e">
+                <title>4 System Specifications</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>2</startPage>
+                    <endPage>2</endPage>
+                </range>
+                <price>13.0</price>
+                <uri>uploads/trimmed_9c9c81ad_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
+            </chunk>
+            <chunk id="57813f2a-0841-4434-84f5-c9ff28db1665">
+                <title>5 Benchmarking</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>3</startPage>
+                    <endPage>3</endPage>
+                </range>
+                <price>14.0</price>
+                <uri>uploads/trimmed_0f3156e5_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
+            </chunk>
+            <chunk id="453deea0-7c4d-43a1-af74-03cbfd83c46c">
+                <title>6 Context Switch Latency Analysis</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>4</startPage>
+                    <endPage>4</endPage>
+                </range>
+                <price>140.0</price>
+                <uri>uploads/trimmed_6b8a72ee_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
+            </chunk>
+            <chunk id="329f84ba-3e17-4428-b120-399568947c7d">
+                <title>7 Conclusion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>5</endPage>
+                </range>
+                <price>14.0</price>
+                <uri>uploads/trimmed_f1001ec2_4ba03a7f-4b55-4c2d-bef6-cecb4548a13d_ssp.pdf</uri>
             </chunk>
         </chunks>
+    </book>
+    <book id="ea462747-e5a4-462e-9c7c-4aebdc9d77b0">
+        <title>sad</title>
+        <author>asd</author>
+        <chunks/>
+    </book>
+    <book id="476d8b12-d87c-4d49-976b-fabb2bc92820">
+        <title>title</title>
+        <author>author</author>
+        <chunks/>
+    </book>
+    <book id="8195f5f3-3b89-40db-857b-5df7cb027e99">
+        <title>sampletitle</title>
+        <author>author1</author>
+        <chunks/>
+    </book>
+    <book id="ba838634-7523-4cab-a1f8-bc4246ea7283">
+        <title>demo book</title>
+        <author>author123</author>
+        <file>
+            <path>uploads/a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</path>
+        </file>
+        <chunks>
+            <chunk id="f20639ee-3a84-42ff-8704-344e3f32c3f0">
+                <title>Introduction</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>5</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_7d96566b_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="eafff4f1-6e38-40ff-a416-bcfbf6a34905">
+                <title>Dataset and Objectives</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>6</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_a8a7fd4b_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="fae6053e-e0b6-4bc2-b50d-e90259f34f1c">
+                <title>Exploratory Data Analysis</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>7</startPage>
+                    <endPage>12</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_8c41eaa6_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="2f6fde59-8b3f-4596-8f82-5983bf17f4ab">
+                <title>Data Preprocessing</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>13</startPage>
+                    <endPage>13</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_25c75b8a_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="f05dec0e-cfbb-4518-9bfa-bb161b23cce6">
+                <title>Model Development</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>14</startPage>
+                    <endPage>18</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_cacb7ec9_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="06a1109e-cea7-46f6-a25a-f5b7f34c1bc6">
+                <title>Results and Comparison</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>19</startPage>
+                    <endPage>19</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_fff31bcc_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="27ec5c46-6106-4925-be2e-55d0d93b0dbd">
+                <title>Test Set Predictions</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>20</startPage>
+                    <endPage>20</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_88be0d9c_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="10a20583-c909-4831-8b4b-b4de1c5be7b2">
+                <title>Discussion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>21</startPage>
+                    <endPage>21</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_199c3b22_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="b947c768-f5d6-499e-9724-4391e88f3615">
+                <title>Conclusion</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>22</startPage>
+                    <endPage>23</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_c416a464_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+            <chunk id="956b0ab8-49ec-46ec-a1ed-bf84f19d496d">
+                <title>Code Snippets</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>24</startPage>
+                    <endPage>25</endPage>
+                </range>
+                <price>0.0</price>
+                <uri>uploads/trimmed_3a887043_a3a87b24-018b-438a-9fa0-3304ccc35f28_AIT511__Course_Project_1__Copy_.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="d2169ce5-4fce-47c0-9171-214576d721c9">
+        <title>book</title>
+        <author>auth</author>
+        <file>
+            <path>uploads/7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</path>
+        </file>
+        <chunks>
+            <chunk id="27af2915-afa5-43cf-8621-8b5f51c56454">
+                <title>Part 1</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>1</startPage>
+                    <endPage>2</endPage>
+                </range>
+                <price>1.0</price>
+                <uri>uploads/trimmed_59798b6d_7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="6d0ec5f9-af5a-46d9-950e-8c7fabce09a8">
+                <title>Part 2</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>3</startPage>
+                    <endPage>4</endPage>
+                </range>
+                <price>2.0</price>
+                <uri>uploads/trimmed_1ee81a00_7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="89f98efe-1381-4019-8b75-fc62104376ae">
+                <title>Part 3</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>5</startPage>
+                    <endPage>6</endPage>
+                </range>
+                <price>1.0</price>
+                <uri>uploads/trimmed_4293c327_7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="188887c3-d1dc-4ecb-9ef9-b0719fa06d00">
+                <title>Part 4</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>7</startPage>
+                    <endPage>8</endPage>
+                </range>
+                <price>1.0</price>
+                <uri>uploads/trimmed_529385f2_7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="f563dc98-2428-48e0-a83e-4c879d4927db">
+                <title>Part 5</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>9</startPage>
+                    <endPage>10</endPage>
+                </range>
+                <price>1.0</price>
+                <uri>uploads/trimmed_e924c8bf_7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+            <chunk id="2d6d8ddd-c337-47fd-95fd-ad49503c9f8f">
+                <title>Part 6</title>
+                <chunkType>pdf</chunkType>
+                <isVirtual>true</isVirtual>
+                <range>
+                    <startPage>11</startPage>
+                    <endPage>12</endPage>
+                </range>
+                <price>3.0</price>
+                <uri>uploads/trimmed_0bc4434c_7426c723-6323-42a0-99f0-e9370876747f_lmbench3-measuring-scalability.pdf</uri>
+            </chunk>
+        </chunks>
+    </book>
+    <book id="fee0bdad-2d92-4327-b25c-ff840d490745">
+        <title>book3</title>
+        <author>auth</author>
+        <chunks/>
     </book>
 </SourceBookRegistry>

@@ -1,57 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, FileText, Image, Mic, Video, Plus, BookOpen, Check } from 'lucide-react';
+import BookSelection from './author/BookSelection';
+import ChunkEditor from './author/ChunkEditor';
+import ChunkList from './author/ChunkList';
 
-interface SourceBook {
-    id: string;
-    title: string;
-    author: string;
-}
 
 const AuthorDashboard: React.FC = () => {
+    const [step, setStep] = useState<'select-flow' | 'create-book' | 'select-book' | 'chunking'>('select-flow');
+    const [sourceBooks, setSourceBooks] = useState<any[]>([]);
+    const [selectedBook, setSelectedBook] = useState<any | null>(null);
+
+    // Book Creation State
     const [bookTitle, setBookTitle] = useState('');
     const [bookAuthor, setBookAuthor] = useState('');
 
-    const [sourceBooks, setSourceBooks] = useState<SourceBook[]>([]);
-    const [selectedBookId, setSelectedBookId] = useState('');
-
+    // Chunking State
     const [chunkTitle, setChunkTitle] = useState('');
-    const [chunkType, setChunkType] = useState('text');
-    const [isVirtual, setIsVirtual] = useState(false);
     const [price, setPrice] = useState('');
+    const [chunkType, setChunkType] = useState('text');
+    const [file, setFile] = useState<File | null>(null);
+    const [driveUrl, setDriveUrl] = useState('');
+    const [isVirtual, setIsVirtual] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
+    // Virtual Range States
     const [startPage, setStartPage] = useState('');
     const [endPage, setEndPage] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
 
-    const [file, setFile] = useState<File | null>(null);
-
-    const fetchBooks = () => {
-        fetch('/api/books/source')
-            .then(res => res.json())
-            .then(data => setSourceBooks(data || []))
-            .catch(console.error);
-    };
+    // AI Auto-chunking State
+    const [isAutoChunking, setIsAutoChunking] = useState(false);
+    const [autoChunkResults, setAutoChunkResults] = useState<any[]>([]);
+    const [proposedChunks, setProposedChunks] = useState<any[] | null>(null);
 
     useEffect(() => {
-        fetchBooks();
-    }, []);
+        if (step === 'select-flow') {
+            fetchBooks();
+        }
+    }, [step]);
+
+    const fetchBooks = async () => {
+        try {
+            const res = await fetch('/api/books/source');
+            const data = await res.json();
+            setSourceBooks(data);
+        } catch (err) {
+            console.error('Failed to fetch books:', err);
+        }
+    };
+
+    const fetchSelectedBook = async (id: string) => {
+        try {
+            const res = await fetch(`/api/books/source/${id}`);
+            const data = await res.json();
+            setSelectedBook(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const handleCreateBook = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!bookTitle) return;
-
         try {
             const res = await fetch('/api/books/source', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: bookTitle, author: bookAuthor || 'Unknown Author' })
+                body: JSON.stringify({ title: bookTitle, author: bookAuthor })
             });
-
             if (res.ok) {
+                const newBook = await res.json();
+                setSelectedBook(newBook);
                 setBookTitle('');
                 setBookAuthor('');
-                fetchBooks();
+                setStep('chunking');
             }
         } catch (err) {
             console.error(err);
@@ -60,19 +81,27 @@ const AuthorDashboard: React.FC = () => {
 
     const handleUploadChunk = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!selectedBookId || !file) return;
-
+        if (!selectedBook) return;
+        if (!file && !driveUrl && !selectedBook.file?.path) {
+            alert('Please select a file or choose from Google Drive before creating a chunk.');
+            return;
+        }
+        
+        setIsUploading(true);
         const formData = new FormData();
-        formData.append('file', file);
-        formData.append('bookId', selectedBookId);
+        if (file) formData.append('file', file);
+        formData.append('bookId', selectedBook.id);
         formData.append('title', chunkTitle);
-        formData.append('price', price);
+        formData.append('price', price || '0');
         formData.append('chunkType', chunkType);
         formData.append('isVirtual', isVirtual.toString());
 
+        if (driveUrl) {
+            formData.append('driveUrl', driveUrl);
+        }
+
         if (isVirtual) {
-            if (chunkType === 'text') {
+            if (chunkType === 'text' || chunkType === 'pdf') {
                 formData.append('startPage', startPage);
                 formData.append('endPage', endPage);
             } else {
@@ -94,196 +123,161 @@ const AuthorDashboard: React.FC = () => {
                 setEndPage('');
                 setStartTime('');
                 setEndTime('');
-                setIsVirtual(false);
-                setFile(null);
+                setDriveUrl('');
+                await fetchSelectedBook(selectedBook.id);
             }
+        } catch (err) {
+            console.error('Failed to upload chunk:', err);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleDeleteChunk = async (chunkId: string) => {
+        if (!selectedBook) return;
+        try {
+            await fetch(`/api/chunks/${selectedBook.id}/${chunkId}`, { method: 'DELETE' });
+            await fetchSelectedBook(selectedBook.id);
         } catch (err) {
             console.error(err);
         }
     };
 
+    const handleAutoChunk = async () => {
+        if (!selectedBook) return;
+        if (!file && !selectedBook.file?.path) return;
+
+        setIsAutoChunking(true);
+        setAutoChunkResults([]);
+        setProposedChunks(null);
+
+        const formData = new FormData();
+        if (file) {
+            formData.append('file', file);
+        }
+        formData.append('bookId', selectedBook.id);
+
+        try {
+            const res = await fetch('/api/chunks/auto-chunk', {
+                method: 'POST',
+                body: formData
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setAutoChunkResults(data);
+                setProposedChunks(data.map((item: any) => ({
+                    title: item.title,
+                    startPage: item.page,
+                    endPage: item.page + 5,
+                    price: 2.00,
+                    virtual: true,
+                    chunkType: 'pdf'
+                })));
+            }
+        } catch (err) {
+            console.error("Auto chunking failed", err);
+        } finally {
+            setIsAutoChunking(false);
+        }
+    };
+
+    const handleSaveBulkChunks = async () => {
+        if (!selectedBook || !proposedChunks) return;
+        setIsUploading(true);
+
+        try {
+            for (const chunk of proposedChunks) {
+                const formData = new FormData();
+                if (file) {
+                    formData.append('file', file);
+                }
+                formData.append('bookId', selectedBook.id);
+                formData.append('title', chunk.title);
+                formData.append('price', chunk.price.toString());
+                formData.append('chunkType', chunk.chunkType);
+                formData.append('isVirtual', 'true');
+                formData.append('startPage', chunk.startPage.toString());
+                formData.append('endPage', chunk.endPage.toString());
+
+                await fetch('/api/chunks/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+            }
+
+            setProposedChunks(null);
+            setAutoChunkResults([]);
+            await fetchSelectedBook(selectedBook.id);
+
+        } catch (err) {
+            console.error('Failed bulk upload:', err);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10 px-4">
+        <div className="min-h-screen py-6 px-4 animate-fade-in relative z-10 w-full mb-10">
             <div className="max-w-4xl mx-auto space-y-8">
-
-                {/* Create Book */}
-                <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm p-6">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                        <BookOpen className="text-blue-600" /> Create Source Book
-                    </h2>
-
-                    <form onSubmit={handleCreateBook} className="space-y-4 mt-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <input
-                                type="text"
-                                required
-                                value={bookTitle}
-                                onChange={e => setBookTitle(e.target.value)}
-                                placeholder="Book Title"
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                            />
-
-                            <input
-                                type="text"
-                                value={bookAuthor}
-                                onChange={e => setBookAuthor(e.target.value)}
-                                placeholder="Author"
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                            />
-                        </div>
-
-                        <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 flex items-center justify-center gap-2">
-                            <Plus size={18} /> Create Book
-                        </button>
-                    </form>
-                </div>
-
-                {/* Books */}
-                {sourceBooks.length > 0 && (
-                    <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm p-6">
-                        <h3 className="text-lg font-semibold mb-4">Select Book</h3>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            {sourceBooks.map(book => (
-                                <div
-                                    key={book.id}
-                                    onClick={() => setSelectedBookId(book.id)}
-                                    className={`p-4 rounded-xl border cursor-pointer transition-all hover:-translate-y-0.5
-                  ${selectedBookId === book.id
-                                            ? 'bg-blue-50 border-blue-500 shadow-sm'
-                                            : 'bg-white hover:shadow-md'
-                                        }`}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <p className="font-semibold text-gray-800">{book.title}</p>
-                                            <p className="text-sm text-gray-500">{book.author}</p>
-                                        </div>
-                                        {selectedBookId === book.id && <Check className="text-blue-600" />}
-                                    </div>
+                {step !== 'chunking' ? (
+                    <BookSelection
+                        step={step}
+                        setStep={setStep}
+                        sourceBooks={sourceBooks}
+                        fetchBooks={fetchBooks}
+                        setSelectedBook={setSelectedBook}
+                        handleCreateBook={handleCreateBook}
+                        bookTitle={bookTitle}
+                        setBookTitle={setBookTitle}
+                        bookAuthor={bookAuthor}
+                        setBookAuthor={setBookAuthor}
+                    />
+                ) : (
+                    <div className="animate-slide-up space-y-8">
+                        <div className="bg-gradient-to-r from-indigo-900 to-purple-900 rounded-2xl p-8 text-white shadow-md relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                            <div className="relative z-10 flex justify-between items-center">
+                                <div>
+                                    <h1 className="text-3xl font-extrabold tracking-tight mb-2">{selectedBook?.title || bookTitle}</h1>
+                                    <p className="text-indigo-200 font-medium">by {selectedBook?.author || bookAuthor}</p>
                                 </div>
-                            ))}
+                                <span className="bg-indigo-800 text-indigo-100 px-4 py-2 rounded-lg font-bold shadow-inner">
+                                    {selectedBook?.chunks?.length || 0} Extraction(s)
+                                </span>
+                            </div>
                         </div>
+
+                        <ChunkEditor
+                            selectedBook={selectedBook}
+                            chunkType={chunkType} setChunkType={setChunkType}
+                            file={file} setFile={setFile}
+                            isVirtual={isVirtual} setIsVirtual={setIsVirtual}
+                            startPage={startPage} setStartPage={setStartPage}
+                            endPage={endPage} setEndPage={setEndPage}
+                            startTime={startTime} setStartTime={setStartTime}
+                            endTime={endTime} setEndTime={setEndTime}
+                            chunkTitle={chunkTitle} setChunkTitle={setChunkTitle}
+                            price={price} setPrice={setPrice}
+                            handleUploadChunk={handleUploadChunk}
+                            isUploading={isUploading}
+                            handleAutoChunk={handleAutoChunk}
+                            isAutoChunking={isAutoChunking}
+                            autoChunkResults={autoChunkResults}
+                            driveUrl={driveUrl}
+                            setDriveUrl={setDriveUrl}
+                        />
+
+                        <ChunkList
+                            proposedChunks={proposedChunks}
+                            setProposedChunks={setProposedChunks}
+                            handleSaveBulkChunks={handleSaveBulkChunks}
+                            isUploading={isUploading}
+                            selectedBook={selectedBook}
+                            handleDeleteChunk={handleDeleteChunk}
+                            setStep={setStep}
+                        />
                     </div>
                 )}
-
-                {/* Upload */}
-                <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm p-6">
-                    <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <Upload className="text-green-600" /> Upload Chunk
-                    </h2>
-
-                    {!selectedBookId ? (
-                        <p className="text-gray-500 text-center py-6">Select a book first</p>
-                    ) : (
-                        <form onSubmit={handleUploadChunk} className="space-y-4 mt-4">
-
-                            <input
-                                type="text"
-                                required
-                                value={chunkTitle}
-                                onChange={e => setChunkTitle(e.target.value)}
-                                placeholder="Chunk Title"
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-                            />
-
-                            <div className="grid grid-cols-3 gap-4">
-                                <select
-                                    value={isVirtual ? 'virtual' : 'physical'}
-                                    onChange={e => setIsVirtual(e.target.value === 'virtual')}
-                                    className="rounded-lg border border-gray-300 px-3 py-2"
-                                >
-                                    <option value="physical">Physical</option>
-                                    <option value="virtual">Virtual</option>
-                                </select>
-
-                                <select
-                                    value={chunkType}
-                                    onChange={e => setChunkType(e.target.value)}
-                                    className="rounded-lg border border-gray-300 px-3 py-2"
-                                >
-                                    <option value="text">Text</option>
-                                    {!isVirtual && <option value="image">Image</option>}
-                                    <option value="audio">Audio</option>
-                                    <option value="video">Video</option>
-                                </select>
-
-                                <input
-                                    type="number"
-                                    value={price}
-                                    onChange={e => setPrice(e.target.value)}
-                                    placeholder="Price"
-                                    className="rounded-lg border border-gray-300 px-3 py-2"
-                                />
-                            </div>
-
-                            {/* Virtual bounds */}
-                            {isVirtual && chunkType === 'text' && (
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="number"
-                                        placeholder="Start Page"
-                                        value={startPage}
-                                        onChange={e => setStartPage(e.target.value)}
-                                        className="rounded-lg border border-gray-300 px-3 py-2"
-                                    />
-                                    <input
-                                        type="number"
-                                        placeholder="End Page"
-                                        value={endPage}
-                                        onChange={e => setEndPage(e.target.value)}
-                                        className="rounded-lg border border-gray-300 px-3 py-2"
-                                    />
-                                </div>
-                            )}
-
-                            {isVirtual && (chunkType === 'audio' || chunkType === 'video') && (
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="text"
-                                        placeholder="Start Time"
-                                        value={startTime}
-                                        onChange={e => setStartTime(e.target.value)}
-                                        className="rounded-lg border border-gray-300 px-3 py-2"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="End Time"
-                                        value={endTime}
-                                        onChange={e => setEndTime(e.target.value)}
-                                        className="rounded-lg border border-gray-300 px-3 py-2"
-                                    />
-                                </div>
-                            )}
-
-                            {/* Upload box */}
-                            <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center bg-gray-50 hover:bg-gray-100 relative cursor-pointer">
-                                <input
-                                    type="file"
-                                    className="absolute inset-0 opacity-0 cursor-pointer"
-                                    onChange={e => setFile(e.target.files?.[0] || null)}
-                                />
-
-                                <div className="flex flex-col items-center gap-2 text-gray-500">
-                                    {chunkType === 'text' && <FileText size={40} />}
-                                    {chunkType === 'image' && <Image size={40} />}
-                                    {chunkType === 'audio' && <Mic size={40} />}
-                                    {chunkType === 'video' && <Video size={40} />}
-
-                                    <p className="text-sm">
-                                        {file ? file.name : 'Click or drag file to upload'}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 flex items-center justify-center gap-2">
-                                <Plus size={18} /> Upload Chunk
-                            </button>
-
-                        </form>
-                    )}
-                </div>
-
             </div>
         </div>
     );

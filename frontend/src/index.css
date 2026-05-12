@@ -1,9 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-indigo-200 selection:text-indigo-900;
+    font-family: 'Poppins', sans-serif;
   }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white border border-slate-200 shadow-sm rounded-2xl;
+  }
+  .glass-card {
+    @apply bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl;
+  }
+  .soft-shadow {
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  }
+  .hover-lift {
+    @apply hover:-translate-y-1 hover:shadow-lg transition-transform duration-300;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

@@ -1,0 +1,61 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.user
+*.suo
+*.ipr
+*.iws
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# -----------------
+# Frontend (Node, Vite, React)
+# -----------------
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -----------------
+# Backend (Java, Maven, Spring Boot)
+# -----------------
+*.class
+target/
+log/
+logs/
+*.log
+test-output/
+.mvn/wrapper/maven-wrapper.jar
+dependency-reduced-pom.xml
+
+# -----------------
+# Application specific files (Uploads, DB, Artifacts)
+# -----------------
+backend/uploads/
+backend/data/
+backend/src/main/resources/application.properties
+backend/target/classes/application.properties
+# Ignoring test/dummy media artifacts generated or added in dev
+*.pdf
+*.epub
+dummy.pdf
+test.epub
