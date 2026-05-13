@@ -29,6 +29,8 @@ interface ChunkEditorProps {
     autoChunkResults: any[];
     driveUrl: string;
     setDriveUrl: (val: string) => void;
+    driveToken: string;
+    setDriveToken: (val: string) => void;
 }
 
 const FileIcon: React.FC<{ chunkType: string; hasFile: boolean }> = ({ chunkType, hasFile }) => {
@@ -43,7 +45,7 @@ const ChunkEditor: React.FC<ChunkEditorProps> = ({
     startPage, setStartPage, endPage, setEndPage, startTime, setStartTime,
     endTime, setEndTime, chunkTitle, setChunkTitle, price, setPrice,
     handleUploadChunk, isUploading, handleAutoChunk, isAutoChunking, autoChunkResults,
-    driveUrl, setDriveUrl
+    driveUrl, setDriveUrl, driveToken, setDriveToken
 }) => {
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [driveFileName, setDriveFileName] = useState('');
@@ -54,6 +56,7 @@ const ChunkEditor: React.FC<ChunkEditorProps> = ({
         setFile(null);
         setDriveUrl('');
         setDriveFileName('');
+        setDriveToken('');
     };
 
     return (
@@ -243,12 +246,15 @@ const ChunkEditor: React.FC<ChunkEditorProps> = ({
                                 <button key={idx} type="button"
                                     onClick={() => {
                                         setChunkTitle(res.title);
-                                        setStartPage(res.page?.toString() || '');
-                                        setEndPage(res.page ? (res.page + 5).toString() : '');
+                                        setStartPage(res.range?.startPage?.toString() || '');
+                                        setEndPage(res.range?.endPage?.toString() || '');
+                                        setStartTime(res.range?.startTime || '');
+                                        setEndTime(res.range?.endTime || '');
+                                        setChunkType(res.chunkType || 'pdf');
                                         setIsVirtual(true);
                                     }}
                                     className="px-4 py-2 bg-white text-green-800 rounded-full text-sm font-semibold border border-green-200 hover:bg-green-100 hover:border-green-300 transition-colors shadow-sm">
-                                    {res.title} (Pg. {res.page})
+                                    {res.title}
                                 </button>
                             ))}
                         </div>
@@ -261,8 +267,8 @@ const ChunkEditor: React.FC<ChunkEditorProps> = ({
                 open={showUploadModal}
                 onClose={() => setShowUploadModal(false)}
                 chunkType={chunkType}
-                onFileSelected={(f) => { setFile(f); setDriveUrl(''); setDriveFileName(''); }}
-                onDriveFileSelected={(url, name) => { setDriveUrl(url); setDriveFileName(name); setFile(null); }}
+                onFileSelected={(f) => { setFile(f); setDriveUrl(''); setDriveFileName(''); setDriveToken(''); }}
+                onDriveFileSelected={(url, name, token) => { setDriveUrl(url); setDriveFileName(name); setDriveToken(token); setFile(null); }}
             />
         </div>
     );

@@ -43,11 +43,15 @@ const ChunkList: React.FC<ChunkListProps> = ({
                                     <div className="w-24 relative">
                                         <label className="block text-xs font-semibold text-slate-500 mb-1 ml-1 uppercase">Start</label>
                                         <input
-                                            type="number"
-                                            value={chunk.startPage || ''}
+                                            type={chunk.chunkType === 'audio' || chunk.chunkType === 'video' ? 'text' : 'number'}
+                                            value={chunk.chunkType === 'audio' || chunk.chunkType === 'video' ? (chunk.startTime || '') : (chunk.startPage || '')}
                                             onChange={e => {
                                                 const newChunks = [...proposedChunks];
-                                                newChunks[idx].startPage = parseInt(e.target.value, 10);
+                                                if (chunk.chunkType === 'audio' || chunk.chunkType === 'video') {
+                                                    newChunks[idx].startTime = e.target.value;
+                                                } else {
+                                                    newChunks[idx].startPage = parseInt(e.target.value, 10) || 0;
+                                                }
                                                 setProposedChunks(newChunks);
                                             }}
                                             className="w-full p-2.5 bg-white border border-slate-300 focus:border-indigo-400 rounded-lg outline-none"
@@ -56,11 +60,15 @@ const ChunkList: React.FC<ChunkListProps> = ({
                                     <div className="w-24 relative">
                                         <label className="block text-xs font-semibold text-slate-500 mb-1 ml-1 uppercase">End</label>
                                         <input
-                                            type="number"
-                                            value={chunk.endPage || ''}
+                                            type={chunk.chunkType === 'audio' || chunk.chunkType === 'video' ? 'text' : 'number'}
+                                            value={chunk.chunkType === 'audio' || chunk.chunkType === 'video' ? (chunk.endTime || '') : (chunk.endPage || '')}
                                             onChange={e => {
                                                 const newChunks = [...proposedChunks];
-                                                newChunks[idx].endPage = parseInt(e.target.value, 10);
+                                                if (chunk.chunkType === 'audio' || chunk.chunkType === 'video') {
+                                                    newChunks[idx].endTime = e.target.value;
+                                                } else {
+                                                    newChunks[idx].endPage = parseInt(e.target.value, 10) || 0;
+                                                }
                                                 setProposedChunks(newChunks);
                                             }}
                                             className="w-full p-2.5 bg-white border border-slate-300 focus:border-indigo-400 rounded-lg outline-none"

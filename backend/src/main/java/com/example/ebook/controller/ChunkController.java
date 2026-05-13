@@ -99,7 +99,8 @@ public class ChunkController {
             @RequestParam(value = "endPage", required = false, defaultValue = "0") int endPage,
             @RequestParam(value = "startTime", required = false) String startTime,
             @RequestParam(value = "endTime", required = false) String endTime,
-            @RequestParam(value = "driveUrl", required = false) String driveUrl) {
+            @RequestParam(value = "driveUrl", required = false) String driveUrl,
+            @RequestParam(value = "driveToken", required = false) String driveToken) {
 
         try {
             // Find the source book
@@ -116,9 +117,33 @@ public class ChunkController {
             // Save file or resolve existing
             Path targetLocation = null;
             String filename = null;
+            boolean downloadedFromDrive = false;
             
             if (driveUrl != null && !driveUrl.isBlank()) {
-                filename = "gdrive_link";
+                filename = "gdrive_" + UUID.randomUUID().toString().substring(0,8);
+                if ("pdf".equalsIgnoreCase(chunkType)) filename += ".pdf";
+                else if ("video".equalsIgnoreCase(chunkType)) filename += ".mp4";
+                else if ("audio".equalsIgnoreCase(chunkType)) filename += ".mp3";
+                else filename += ".txt";
+                
+                targetLocation = this.uploadPath.resolve(filename);
+                try {
+                    java.net.URLConnection conn = new java.net.URL(driveUrl).openConnection();
+                    if (driveToken != null && !driveToken.isBlank()) {
+                        conn.setRequestProperty("Authorization", "Bearer " + driveToken);
+                    }
+                    try (java.io.InputStream in = conn.getInputStream()) {
+                        Files.copy(in, targetLocation);
+                    }
+                    if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                        sourceBook.setFile(new SourceBook.FileInfo("uploads/" + filename));
+                    }
+                    downloadedFromDrive = true;
+                } catch (Exception e) {
+                    System.err.println("Could not download GDrive file: " + e.getMessage());
+                    targetLocation = null;
+                    filename = "gdrive_link";
+                }
             } else if (file != null && !file.isEmpty()) {
                 filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
                 targetLocation = this.uploadPath.resolve(filename);
@@ -149,12 +174,12 @@ public class ChunkController {
             chunk.setChunkType(chunkType);
             chunk.setPrice(price);
 
-            if (driveUrl != null && !driveUrl.isBlank()) {
+            if (driveUrl != null && !driveUrl.isBlank() && !downloadedFromDrive) {
                 chunk.setUri(driveUrl);
-                chunk.setVirtual(false); // Remote URLs are inherently physical chunks
+                chunk.setVirtual(false); // Remote URLs that we can't download are inherently physical chunks
             } else {
                 chunk.setVirtual(isVirtual);
-                chunk.setUri("uploads/" + filename);
+                chunk.setUri(downloadedFromDrive && !isVirtual ? driveUrl : "uploads/" + filename);
 
                 if (isVirtual && targetLocation != null) {
                     SourceBook.Range range = new SourceBook.Range();
@@ -176,7 +201,7 @@ public class ChunkController {
                                             if (document.getNumberOfPages() > 0) document.removePage(0);
                                         }
                                     }
-                                    String newFilename = "trimmed_" + filename;
+                                    String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename;
                                     Path newTargetLocation = this.uploadPath.resolve(newFilename);
                                     document.save(newTargetLocation.toFile());
                                     chunk.setUri("uploads/" + newFilename);
@@ -197,7 +222,7 @@ public class ChunkController {
                                     trimmedLines = lines.subList(startLine, endLine);
                                 }
                                 
-                                String newFilename = "trimmed_" + filename + ".txt";
+                                String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename + ".txt";
                                 Path newTargetLocation = this.uploadPath.resolve(newFilename);
                                 Files.write(newTargetLocation, trimmedLines);
                                 chunk.setUri("uploads/" + newFilename);
@@ -210,7 +235,7 @@ public class ChunkController {
                         // if Chunk type is audio/video then use timestamps for range
                         range.setStartTime(startTime);
                         range.setEndTime(endTime);
-                        String newFilename = "trimmed_" + filename;
+                        String newFilename = "trimmed_" + UUID.randomUUID().toString().substring(0,8) + "_" + filename;
                         Path newTargetLocation = this.uploadPath.resolve(newFilename);
                         try {
                             ProcessBuilder pb = new ProcessBuilder(
@@ -282,6 +307,8 @@ public class ChunkController {
     @PostMapping("/chunks/auto-chunk")
     public ResponseEntity<List<SourceBook.SourceChunk>> autoChunk(
             @RequestParam(value = "file", required = false) MultipartFile fileParam,
+            @RequestParam(value = "driveUrl", required = false) String driveUrl,
+            @RequestParam(value = "driveToken", required = false) String driveToken,
             @RequestParam("bookId") String bookId) {
         try {
             SourceBookRegistry registry = xmlService.getSourceBookRegistry();
@@ -294,10 +321,31 @@ public class ChunkController {
                 return ResponseEntity.badRequest().build();
             }
 
-            Path targetLocation;
-            String filename;
+            Path targetLocation = null;
+            String filename = null;
 
-            if (fileParam != null && !fileParam.isEmpty()) {
+            if (driveUrl != null && !driveUrl.isBlank()) {
+                filename = "gdrive_auto_" + UUID.randomUUID().toString().substring(0,8) + ".pdf";
+                if (driveUrl.toLowerCase().contains("video") || driveUrl.toLowerCase().contains("mp4")) {
+                    filename = filename.replace(".pdf", ".mp4");
+                }
+                targetLocation = this.uploadPath.resolve(filename);
+                try {
+                    java.net.URLConnection conn = new java.net.URL(driveUrl).openConnection();
+                    if (driveToken != null && !driveToken.isBlank()) {
+                        conn.setRequestProperty("Authorization", "Bearer " + driveToken);
+                    }
+                    try (java.io.InputStream in = conn.getInputStream()) {
+                        Files.copy(in, targetLocation);
+                    }
+                    if (sourceBook.getFile() == null || sourceBook.getFile().getPath() == null) {
+                        sourceBook.setFile(new SourceBook.FileInfo("uploads/" + filename));
+                    }
+                } catch (Exception e) {
+                    System.err.println("Could not download GDrive file for auto-chunk: " + e.getMessage());
+                    return ResponseEntity.badRequest().build();
+                }
+            } else if (fileParam != null && !fileParam.isEmpty()) {
                 filename = UUID.randomUUID().toString() + "_" + fileParam.getOriginalFilename();
                 targetLocation = this.uploadPath.resolve(filename);
                 Files.copy(fileParam.getInputStream(), targetLocation);

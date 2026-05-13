@@ -19,7 +19,7 @@ interface UploadSourceModalProps {
     open: boolean;
     onClose: () => void;
     onFileSelected: (file: File) => void;
-    onDriveFileSelected: (url: string, name: string) => void;
+    onDriveFileSelected: (url: string, name: string, token: string) => void;
     chunkType: string;
 }
 
@@ -71,7 +71,7 @@ async function loadGIS(): Promise<void> {
 // Ask GIS for an access token, then open the picker
 async function openGooglePicker(
     chunkType: string,
-    onPicked: (url: string, name: string) => void
+    onPicked: (url: string, name: string, token: string) => void
 ): Promise<void> {
     if (!GOOGLE_API_KEY || !GOOGLE_CLIENT_ID) {
         alert(
@@ -111,9 +111,9 @@ async function openGooglePicker(
                 .setCallback((data: any) => {
                     if (data.action === window.google.picker.Action.PICKED) {
                         const doc = data.docs[0];
-                        // Direct download URL so the backend can fetch it
-                        const url = `https://drive.google.com/uc?export=download&id=${doc.id}`;
-                        onPicked(url, doc.name);
+                        // Use the v3 API endpoint for downloading with OAuth
+                        const url = `https://www.googleapis.com/drive/v3/files/${doc.id}?alt=media`;
+                        onPicked(url, doc.name, tokenResponse.access_token);
                     }
                 })
                 .build();
@@ -135,8 +135,8 @@ const UploadSourceModal: React.FC<UploadSourceModalProps> = ({
 
     const handleDrivePick = useCallback(async () => {
         try {
-            await openGooglePicker(chunkType, (url, name) => {
-                onDriveFileSelected(url, name);
+            await openGooglePicker(chunkType, (url, name, token) => {
+                onDriveFileSelected(url, name, token);
                 onClose();
             });
         } catch (err) {

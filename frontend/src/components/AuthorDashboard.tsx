@@ -19,6 +19,7 @@ const AuthorDashboard: React.FC = () => {
     const [chunkType, setChunkType] = useState('text');
     const [file, setFile] = useState<File | null>(null);
     const [driveUrl, setDriveUrl] = useState('');
+    const [driveToken, setDriveToken] = useState('');
     const [isVirtual, setIsVirtual] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -99,6 +100,9 @@ const AuthorDashboard: React.FC = () => {
         if (driveUrl) {
             formData.append('driveUrl', driveUrl);
         }
+        if (driveToken) {
+            formData.append('driveToken', driveToken);
+        }
 
         if (isVirtual) {
             if (chunkType === 'text' || chunkType === 'pdf') {
@@ -124,6 +128,8 @@ const AuthorDashboard: React.FC = () => {
                 setStartTime('');
                 setEndTime('');
                 setDriveUrl('');
+                setDriveToken('');
+                setFile(null);
                 await fetchSelectedBook(selectedBook.id);
             }
         } catch (err) {
@@ -145,7 +151,7 @@ const AuthorDashboard: React.FC = () => {
 
     const handleAutoChunk = async () => {
         if (!selectedBook) return;
-        if (!file && !selectedBook.file?.path) return;
+        if (!file && !driveUrl && !selectedBook.file?.path) return;
 
         setIsAutoChunking(true);
         setAutoChunkResults([]);
@@ -154,6 +160,12 @@ const AuthorDashboard: React.FC = () => {
         const formData = new FormData();
         if (file) {
             formData.append('file', file);
+        }
+        if (driveUrl) {
+            formData.append('driveUrl', driveUrl);
+        }
+        if (driveToken) {
+            formData.append('driveToken', driveToken);
         }
         formData.append('bookId', selectedBook.id);
 
@@ -167,11 +179,13 @@ const AuthorDashboard: React.FC = () => {
                 setAutoChunkResults(data);
                 setProposedChunks(data.map((item: any) => ({
                     title: item.title,
-                    startPage: item.page,
-                    endPage: item.page + 5,
+                    startPage: item.range?.startPage || 0,
+                    endPage: item.range?.endPage || 0,
+                    startTime: item.range?.startTime || '',
+                    endTime: item.range?.endTime || '',
                     price: 2.00,
                     virtual: true,
-                    chunkType: 'pdf'
+                    chunkType: item.chunkType || 'pdf'
                 })));
             }
         } catch (err) {
@@ -196,8 +210,13 @@ const AuthorDashboard: React.FC = () => {
                 formData.append('price', chunk.price.toString());
                 formData.append('chunkType', chunk.chunkType);
                 formData.append('isVirtual', 'true');
-                formData.append('startPage', chunk.startPage.toString());
-                formData.append('endPage', chunk.endPage.toString());
+                if (chunk.chunkType === 'text' || chunk.chunkType === 'pdf') {
+                    formData.append('startPage', chunk.startPage.toString());
+                    formData.append('endPage', chunk.endPage.toString());
+                } else {
+                    formData.append('startTime', chunk.startTime || '');
+                    formData.append('endTime', chunk.endTime || '');
+                }
 
                 await fetch('/api/chunks/upload', {
                     method: 'POST',
@@ -265,6 +284,8 @@ const AuthorDashboard: React.FC = () => {
                             autoChunkResults={autoChunkResults}
                             driveUrl={driveUrl}
                             setDriveUrl={setDriveUrl}
+                            driveToken={driveToken}
+                            setDriveToken={setDriveToken}
                         />
 
                         <ChunkList
